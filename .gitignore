@@ -1,0 +1,11 @@
+node_modules/
+
+data/diagnostic\.data/
+
+data/
+
+dist
+
+db
+
+log4js
