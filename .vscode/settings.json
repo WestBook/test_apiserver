@@ -1,10 +1,15 @@
 {
     "editor.codeActionsOnSave": {
-      "source.fixAll.eslint": true
+        "source.fixAll.eslint": true
     },
     "editor.defaultFormatter": "esbenp.prettier-vscode",
     "editor.formatOnSave": true,
-    "[javascript]": {
-      "editor.defaultFormatter": "vscode.typescript-language-features"
+    "[typescript]": {
+        // typescript 默認prettier格式化規則
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[jsonc]": {
+        // json 默認prettier格式化規則
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
     }
-}  
+}
