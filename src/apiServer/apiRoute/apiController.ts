@@ -2,11 +2,10 @@ import { NextFunction, Response, Request } from 'express';
 import { ControllerBase } from '../../base/controllerBase';
 import { APIService } from './apiService';
 export class APIController extends ControllerBase<APIService> {
-
     public async getGameDBList(res: Response) {
         let data = await this.service.getGameDBList();
         let resData = { data, code: 0 };
-        if(data == null) {
+        if (data == null) {
             resData.code = -1;
         }
         res.send(resData);
@@ -14,10 +13,10 @@ export class APIController extends ControllerBase<APIService> {
 
     public async createDB(req: Request, res: Response) {
         let { gameId, setting } = req.body;
-        let resData = { code:0, msg: 'success'};
+        let resData = { code: 0, msg: 'success' };
         try {
             await this.service.createDB(gameId);
-        } catch(error) {
+        } catch (error) {
             resData.code = -1;
             resData.msg = JSON.stringify(error);
         }
@@ -26,7 +25,7 @@ export class APIController extends ControllerBase<APIService> {
 
     public async gameExistCheck(gameId: string) {
         let dbList = await this.service.getGameDBList();
-        return dbList.indexOf(gameId) != -1
+        return dbList.indexOf(gameId) != -1;
     }
 
     public async typeExistCheck(gameNo: number) {
@@ -41,15 +40,15 @@ export class APIController extends ControllerBase<APIService> {
         let isGameExist = await this.gameExistCheck(gameId);
         let isTypeExist = await this.typeExistCheck(gameNo);
         let resData = { data: {}, code: 0 };
-        if(isGameExist) {
-            console.log('updateGame')
+        if (isGameExist) {
+            console.log('updateGame');
             await this.service.updateGame(gameId, gameType, roomSetting);
             res.send(resData);
-        } else if(isTypeExist) {
+        } else if (isTypeExist) {
             console.log(`遊戲編號${gameNo}已使用`);
             res.send({
                 code: -1,
-                msg: '遊戲編號已使用'
+                msg: '遊戲編號已使用',
             });
         } else {
             console.log('createGame');
@@ -62,31 +61,31 @@ export class APIController extends ControllerBase<APIService> {
     }
 
     public async updateScheduleData(req: Request, res: Response, next?: NextFunction) {
-        let { gameId, uid, title} = req.params;
-        let {  jsonData } = req.body;
+        let { gameId, uid, title } = req.params;
+        let { jsonData } = req.body;
         let resData = { code: 0 };
         try {
-            await this.service.updateMockData(gameId,uid,title, jsonData);
-        } catch(err) {
+            await this.service.updateMockData(gameId, uid, title, jsonData);
+        } catch (err) {
             resData.code = -1;
         }
         res.send(resData);
     }
 
-        public async applyScheduleData(req: Request, res: Response, next?: NextFunction) {
-        let { gameId, uid, title} = req.params;
+    public async applyScheduleData(req: Request, res: Response, next?: NextFunction) {
+        let { gameId, uid, title } = req.params;
         let resData = { code: 0 };
         try {
-            await this.service.applyScheduleData(gameId,uid,title);
-        } catch(err) {
+            await this.service.applyScheduleData(gameId, uid, title);
+        } catch (err) {
             resData.code = -1;
         }
         res.send(resData);
     }
 
     public async getScheduleGameList(req: Request, res: Response, next?: NextFunction) {
-        let resData = { code: 0, data:{} };
-        let { uid } = req.params
+        let resData = { code: 0, data: {} };
+        let { uid } = req.params;
         try {
             resData.data = await this.service.getScheduleGameList(uid);
         } catch (err) {
@@ -95,22 +94,28 @@ export class APIController extends ControllerBase<APIService> {
         res.send(resData);
     }
 
-    public async getScheduleData(req: Request, res: Response, next?: NextFunction) {
-        let resData = { code: 0, data:{} };
-        let { gameId,uid } = req.params
+    public async getScheduleData(req: Request, res: Response, isApply: boolean, next?: NextFunction) {
+        let resData = { code: 0, data: {} };
+        let { gameId, uid } = req.params;
         try {
-            resData.data = await this.service.getScheduleData(gameId, uid);
+            if (isApply) {
+                resData.data = await this.service.getApplyScheduleData(gameId, uid);
+            } else {
+                resData.data = await this.service.getScheduleData(gameId, uid);
+            }
         } catch (err) {
             resData.code = -1;
         }
         res.send(resData);
     }
 
+    public async getApplyScheduleData(req: Request, res: Response, next?: NextFunction) {}
+
     public async deleteScheduleData(req: Request, res: Response, next?: NextFunction) {
         let resData = { code: 0 };
-        let { gameId, uid, title} = req.params;
+        let { gameId, uid, title } = req.params;
         try {
-             await this.service.deleteScheduleData(gameId, uid, title);
+            await this.service.deleteScheduleData(gameId, uid, title);
         } catch (err) {
             resData.code = -1;
         }
@@ -118,12 +123,12 @@ export class APIController extends ControllerBase<APIService> {
     }
 
     public async createScheduleData(req: Request, res: Response, next?: NextFunction) {
-        let { gameId, uid} = req.params;
-        let { jsonData,title } = req.body;
+        let { gameId, uid } = req.params;
+        let { jsonData, title } = req.body;
         let resData = { code: 0 };
         try {
-            await this.service.createMockData(gameId,uid,title, jsonData);
-        } catch(err) {
+            await this.service.createMockData(gameId, uid, title, jsonData);
+        } catch (err) {
             resData.code = -1;
         }
         res.send(resData);
@@ -132,46 +137,49 @@ export class APIController extends ControllerBase<APIService> {
     public getAccountInfo(user) {
         const { nickName, score, userId, account, inGame } = user;
         return {
-            nickName, score, userId, account,
-            status: inGame ? 1 : 0
-        }
+            nickName,
+            score,
+            userId,
+            account,
+            status: inGame ? 1 : 0,
+        };
     }
 
     public async createUser(req: Request, res: Response, next: NextFunction) {
         const { account, pwd } = req.body;
-        if(!account || !pwd) {
-            res.send({code: -1, msg: '請檢查帳號密碼'});
+        if (!account || !pwd) {
+            res.send({ code: -1, msg: '請檢查帳號密碼' });
             return;
         }
         let existUser = await this.service.getUserDataByAccount(account);
-        if(existUser) {
-            res.send({ code: -1, msg: '已存在使用者'});
+        if (existUser) {
+            res.send({ code: -1, msg: '已存在使用者' });
         } else {
             let defaultUser = await this.service.getDefaultUserData(account, pwd);
             let insertRes = await this.service.createUser(defaultUser);
-            if(insertRes) {
+            if (insertRes) {
                 let info = this.getAccountInfo(defaultUser);
-                res.send({code: 0, msg: '註冊成功', data: info});
+                res.send({ code: 0, msg: '註冊成功', data: info });
             } else {
-                res.send({code: -1, msg: '註冊失敗'})
+                res.send({ code: -1, msg: '註冊失敗' });
             }
-        };
+        }
     }
 
     public async userLogin(req: Request, res: Response, next: NextFunction) {
         const { account, pwd } = req.body;
-        if(!account || !pwd) {
-            res.send({code: -1, msg: '請檢查帳號密碼'});
+        if (!account || !pwd) {
+            res.send({ code: -1, msg: '請檢查帳號密碼' });
             return;
         }
         let existUser = await this.service.getUserDataByAccount(account);
-        if(!existUser) {
-            res.send({ code: -1, msg: '查無此帳號，請重新輸入或註冊新帳號'});
-        } else if(pwd != existUser.pwd) {
-            res.send({ code: -1, msg: '密碼錯誤，請重新輸入'})
+        if (!existUser) {
+            res.send({ code: -1, msg: '查無此帳號，請重新輸入或註冊新帳號' });
+        } else if (pwd != existUser.pwd) {
+            res.send({ code: -1, msg: '密碼錯誤，請重新輸入' });
         } else {
             let info = this.getAccountInfo(existUser);
-            res.send({code: 0, msg: '登入成功', data: info});
+            res.send({ code: 0, msg: '登入成功', data: info });
         }
     }
 
@@ -183,7 +191,7 @@ export class APIController extends ControllerBase<APIService> {
             resData.code = -201;
         }
 
-        if(next) {
+        if (next) {
             next();
         }
         res.send(resData);
@@ -191,37 +199,46 @@ export class APIController extends ControllerBase<APIService> {
 
     public async getBalance(req: Request, res: Response, next: NextFunction) {
         const { account } = req.body;
-        if(!account) {
-            res.send({ code: -1, msg: '請檢查帳號'});
+        if (!account) {
+            res.send({ code: -1, msg: '請檢查帳號' });
             return;
         }
         let data = await this.service.getUserDataByAccount(account);
-        if(data) {
+        if (data) {
             const { score, inGame } = data;
             const status = inGame ? 1 : 0;
-            res.send({ code: 0, msg: '取得餘額成功', data: {
-                score, status
-            } });
+            res.send({
+                code: 0,
+                msg: '取得餘額成功',
+                data: {
+                    score,
+                    status,
+                },
+            });
         } else {
-            res.send({code: 0, msg: '查無該帳號資料'});
+            res.send({ code: 0, msg: '查無該帳號資料' });
         }
     }
 
     public async transferBalance(req: Request, res: Response, next: NextFunction) {
         const { account, type, balance } = req.body;
-        if(!account || isNaN(balance)) {
-            res.send({code: -1, msg: '請檢查帳號或上下分數值是否有誤'});
+        if (!account || isNaN(balance)) {
+            res.send({ code: -1, msg: '請檢查帳號或上下分數值是否有誤' });
             return;
         }
         const delta = Number(type) === 0 ? Number(balance) : -Number(balance);
         const msgType = Number(type) === 0 ? '上分' : '下分';
         let updateUser = await this.service.updateBalance(account, delta);
-        if(updateUser) {
-            res.send({code: 0, msg: `${msgType}成功`, data: {
-                score: updateUser.score / 100
-            }})
+        if (updateUser) {
+            res.send({
+                code: 0,
+                msg: `${msgType}成功`,
+                data: {
+                    score: updateUser.score / 100,
+                },
+            });
         } else {
-            res.send({code: -1, msg: `${msgType}失敗`});
+            res.send({ code: -1, msg: `${msgType}失敗` });
         }
     }
 
@@ -231,7 +248,7 @@ export class APIController extends ControllerBase<APIService> {
         if (data == null) {
             resData.code = -1;
         }
-        if(next) {
+        if (next) {
             next();
         }
         res.send(resData);
@@ -241,7 +258,7 @@ export class APIController extends ControllerBase<APIService> {
         let data = await this.service.getNoticeData();
         let resData = {
             annResp: data,
-            code: 0
+            code: 0,
         };
         if (data == null) {
             resData.code = -1;
@@ -257,10 +274,10 @@ export class APIController extends ControllerBase<APIService> {
         } else {
             res.send({
                 settingRes: data,
-                code: 0
+                code: 0,
             });
         }
-        if(next) {
+        if (next) {
             next();
         }
     }

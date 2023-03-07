@@ -33,15 +33,17 @@ export class APIService {
     }
 
     private async updateTypesData(id, data) {
-        return await this.typesModel.updateData({_id: id}, {$set: data});
+        return await this.typesModel.updateData({ _id: id }, { $set: data });
     }
 
     public async getGameDBList(): Promise<Array<string>> {
         let client = new MongoClient(dbUrl);
         let db = (await client.connect()).db();
-        let allDb = (await db.admin().listDatabases({nameOnly: true})).databases;
-        let gameDbList = allDb?.map(db => db.name).filter(db => db !== 'API' && db != 'admin' && db != 'local' && db != 'config');
-        console.log('dbList:', gameDbList)
+        let allDb = (await db.admin().listDatabases({ nameOnly: true })).databases;
+        let gameDbList = allDb
+            ?.map((db) => db.name)
+            .filter((db) => db !== 'API' && db != 'admin' && db != 'local' && db != 'config');
+        console.log('dbList:', gameDbList);
         return gameDbList;
     }
 
@@ -78,14 +80,14 @@ export class APIService {
             nickName: account,
             userAddress: '台北',
             inGame: 0,
-            collectList: []
-        }
+            collectList: [],
+        };
     }
 
     public async updateBalance(account: string, balance: number) {
         let user = await this.userModel.getUserDataByAccount(account);
         user.score = Math.round(user.score + balance * 100);
-        await this.userModel.updateData({account}, user);
+        await this.userModel.updateData({ account }, user);
         return user;
     }
 
@@ -97,12 +99,12 @@ export class APIService {
         let db = await this.getDB(gameName);
         let gameCollection = db.collection('RoomSetting');
 
-        if(gameType === 'Bet') {
+        if (gameType === 'Bet') {
             return await this.updateBetGame(gameCollection, roomSetting);
         } else if (gameType === 'Qz') {
             return await this.updateQzGame(gameCollection, roomSetting);
         } else {
-            return
+            return;
         }
     }
 
@@ -123,15 +125,14 @@ export class APIService {
                 areaLimitScore,
                 serverID: Number(serverId),
                 chipsConfig,
-                subType: index + 1
-            }
+                subType: index + 1,
+            };
             try {
-                return await collection.updateOne({serverID:  Number(serverId)}, {$set: data});
-            } catch(e) {
+                return await collection.updateOne({ serverID: Number(serverId) }, { $set: data });
+            } catch (e) {
                 console.log(JSON.stringify(e));
                 return;
             }
-            
         });
     }
 
@@ -145,17 +146,16 @@ export class APIService {
                 grab,
                 multi,
                 serverID: serverId,
-                subType: index + 1
-            }
-            await collection.updateOne({serverID: serverId}, {$set: data});
-        })
+                subType: index + 1,
+            };
+            await collection.updateOne({ serverID: serverId }, { $set: data });
+        });
     }
-    
 
     public async createRoomSetting(gameName, gameType, setting: Array<any>) {
         let db = await this.createDB(gameName);
         let collection = await db.collection('RoomSetting');
-        
+
         let roomSetting = gameType === 'Bet' ? this.createBetSetting(setting) : this.createQzSetting(setting);
         return await collection.insertMany(roomSetting);
     }
@@ -170,8 +170,8 @@ export class APIService {
                 areaLimitScore,
                 serverID: serverId,
                 chipsConfig,
-                subType: index + 1
-            }
+                subType: index + 1,
+            };
         });
     }
 
@@ -185,8 +185,8 @@ export class APIService {
                 grab,
                 multi,
                 serverID: serverId,
-                subType: index + 1
-            }
+                subType: index + 1,
+            };
         });
     }
 
@@ -204,7 +204,7 @@ export class APIService {
             vip,
             nameChanged,
             nickname: nickName,
-            score
+            score,
         };
     }
 
@@ -218,19 +218,19 @@ export class APIService {
                 {
                     bottomImagePath: '',
                     bottomImageVersion: 0,
-                    imageDomain: '/test/api'
+                    imageDomain: '/test/api',
                 },
                 {
                     bottomImagePath: '',
                     bottomImageVersion: 1,
-                    imageDomain: '/test/api'
+                    imageDomain: '/test/api',
                 },
                 {
                     bottomImagePath: '',
                     bottomImageVersion: 2,
-                    imageDomain: '/test/api'
-                }
-            ]
+                    imageDomain: '/test/api',
+                },
+            ],
         };
     }
 
@@ -247,40 +247,40 @@ export class APIService {
         return { vals };
     }
 
-    public async createMockData(gameId: string, uid: string,title:string, jsonData: any) {
-         //切到對應的DB
+    public async createMockData(gameId: string, uid: string, title: string, jsonData: any) {
+        //切到對應的DB
         let gameName = this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
-            jsonData = JSON.parse(jsonData)
+            jsonData = JSON.parse(jsonData);
             let apply = false;
-            return await this.packetScheduleModel.createMockData(uid, title,apply, jsonData);
+            return await this.packetScheduleModel.createMockData(uid, title, apply, jsonData);
         }
     }
 
-    public async updateMockData(gameId: string, uid: string,title: string, jsonData: any) {
-         //切到對應的DB
+    public async updateMockData(gameId: string, uid: string, title: string, jsonData: any) {
+        //切到對應的DB
         let gameName = this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
-            jsonData = JSON.parse(jsonData)
+            jsonData = JSON.parse(jsonData);
             return await this.packetScheduleModel.updateMockData(uid, title, jsonData);
         }
     }
 
-        public async applyScheduleData(gameId: string, uid: string,title: string) {
-         //切到對應的DB
+    public async applyScheduleData(gameId: string, uid: string, title: string) {
+        //切到對應的DB
         let gameName = this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
-            await this.packetScheduleModel.updateData({ uid, apply:true }, { apply :false});
-            return await this.packetScheduleModel.updateData({uid,title}, {apply:true});
+            await this.packetScheduleModel.updateData({ uid, apply: true }, { apply: false });
+            return await this.packetScheduleModel.updateData({ uid, title }, { apply: true });
         }
     }
-    
-    public async getScheduleGameList( uid: string) {
+
+    public async getScheduleGameList(uid: string) {
         return await this.packetScheduleModel.getScheduleGameList(uid);
-    }  
+    }
 
     public async getScheduleData(gameId: string, uid: string) {
         //切到對應的DB
@@ -289,18 +289,27 @@ export class APIService {
             this.packetScheduleModel.setupDB(gameName);
             return await this.packetScheduleModel.getMockData(uid);
         }
-    }  
-    
-    public async deleteScheduleData(gameId: string, uid: string,title: string) {
+    }
+
+    public async getApplyScheduleData(gameId: string, uid: string) {
+        //切到對應的DB
         let gameName = this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
-            return await this.packetScheduleModel.deleteMockData(uid,title);
+            return await this.packetScheduleModel.getApplyMockData(uid);
+        }
+    }
+
+    public async deleteScheduleData(gameId: string, uid: string, title: string) {
+        let gameName = this.getGameName(gameId);
+        if (gameName.length > 0) {
+            this.packetScheduleModel.setupDB(gameName);
+            return await this.packetScheduleModel.deleteMockData(uid, title);
         }
     }
 
     private getGameName(id: string) {
-        let gameObj = getGameById(id)
+        let gameObj = getGameById(id);
         return gameObj.name;
     }
 }

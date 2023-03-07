@@ -71,7 +71,7 @@ export class GameRoute extends RouteBase {
             this.gameController.updateUserScore(req, res, next);
         });
 
-        this.Router.post('/getUserData.do', (req: Request, res: Response, next?: NextFunction) => {
+        this.Router.get('/getUserData/:uid', (req: Request, res: Response, next?: NextFunction) => {
             this.gameController.getUserData(req, res, next);
         });
     }

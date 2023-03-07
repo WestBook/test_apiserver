@@ -127,7 +127,7 @@ export class GameController extends ControllerBase<GameService> {
     }
 
     public async getUserData(req: Request, res: Response, next: NextFunction) {
-        const { uid } = req.body;
+        const { uid } = req.params;
         try {
             let userData = await this.service.getUserData(uid);
             if (!userData) {
