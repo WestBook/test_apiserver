@@ -1,4 +1,4 @@
-import { dbUrl } from '../../../common/setting';
+import { dbUrl, setGameList } from '../../../common/setting';
 import { UsersModel } from '../../../model/usersModel';
 import { GameListModel } from '../../../model/gameListModel';
 
@@ -10,6 +10,8 @@ export class GameService {
         this.gameListModel = new GameListModel();
         await this.userModel.init(dbUrl, 'API');
         await this.gameListModel.init(dbUrl, 'API');
+        let gameList = await this.getGamesList();
+        setGameList(gameList);
     }
 
     public async getUserData(uid: string) {
@@ -30,6 +32,12 @@ export class GameService {
         let data = await this.gameListModel.getNewGameList();
         const { newGameList } = data;
         return newGameList;
+    }
+
+    public async getGamesList(): Promise<Array<number>> {
+        let data = await this.gameListModel.getGameList();
+        const { GameList } = data;
+        return GameList;
     }
 
     public async updatePopularList(list: Array<number>) {

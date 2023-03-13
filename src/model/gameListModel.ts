@@ -1,4 +1,4 @@
-import { ModelBase } from "../base/modelBase";
+import { ModelBase } from '../base/modelBase';
 
 export class GameListModel extends ModelBase {
     protected getCollectionName(): string {
@@ -6,20 +6,24 @@ export class GameListModel extends ModelBase {
     }
 
     public async getPopularList() {
-        return await this.findData({type: "popular"});
+        return await this.findData({ type: 'popular' });
     }
 
     public async updatePopularList(dataList: Array<number>) {
-        let query = {type: "popular"};
-        return await this.updateData(query, {popularList: dataList});
+        let query = { type: 'popular' };
+        return await this.updateData(query, { popularList: dataList });
     }
 
     public async getNewGameList() {
-        return await this.findData({type: "newGame"});
+        return await this.findData({ type: 'newGame' });
+    }
+
+    public async getGameList() {
+        return await this.findData({ type: 'lobby' });
     }
 
     public async updateNewGameList(dataList: Array<number>) {
-        let query = {type: "newGame"};
-        return await this.updateData(query, {newGameList: dataList});
+        let query = { type: 'newGame' };
+        return await this.updateData(query, { newGameList: dataList });
     }
 }
