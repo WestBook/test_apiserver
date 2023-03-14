@@ -7,28 +7,23 @@ const getLobbyUrl = (hostname: string) => {
     return isDev ? `http://${hostname}:8081` : 'http://192.168.1.158/lobby';
 };
 
-let GameList;
-const setGameList = (gameList) => {
-    GameList = gameList;
-};
+class GameList {
+    public static gameList = [];
 
-const getGameList = () => {
-    return GameList;
-};
+    public static getGameByName = (name: string) => {
+        return GameList.gameList.find((item) => item.name === name);
+    };
 
-const getGameByName = (name: string) => {
-    return GameList.find((item) => item.name === name);
-};
+    public static getGameById = (id: string) => {
+        return GameList.gameList.find((item) => item.gameId === id);
+    };
 
-const getGameById = (id: string) => {
-    return GameList.find((item) => item.gameId === id);
-};
+    public static getGameSetting = (serverId: string) => {
+        let gameNum = serverId.slice(1, serverId.length - 1);
+        let subType = serverId.slice(serverId.length - 1);
+        let game = GameList.getGameById(gameNum);
+        return { ...game, subType };
+    };
+}
 
-const getGameSetting = (serverId: string) => {
-    let gameNum = serverId.slice(1, serverId.length - 1);
-    let subType = serverId.slice(serverId.length - 1);
-    let game = getGameById(gameNum);
-    return { ...game, subType };
-};
-
-export { setGameList, getGameList, apiPort, dbUrl, getLobbyUrl, getGameByName, getGameSetting, getGameById };
+export { GameList, apiPort, dbUrl, getLobbyUrl };

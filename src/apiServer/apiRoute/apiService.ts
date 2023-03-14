@@ -1,10 +1,9 @@
-import { dbUrl } from '../../common/setting';
+import { dbUrl, GameList } from '../../common/setting';
 import { SettingModel } from '../../model/settingModel';
 import { UsersModel } from '../../model/usersModel';
 import { PacketScheduleModel } from '../../model/PacketScheduleModel';
 import { MongoClient } from 'mongodb';
 import { TypesModel } from '../../model/typesModel';
-import { getGameById } from '../../common/setting';
 
 export class APIService {
     private userModel: UsersModel;
@@ -309,7 +308,7 @@ export class APIService {
     }
 
     private getGameName(id: string) {
-        let gameObj = getGameById(id);
+        let gameObj = GameList.getGameById(id);
         return gameObj.name;
     }
 }

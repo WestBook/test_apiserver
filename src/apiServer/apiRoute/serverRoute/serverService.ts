@@ -1,4 +1,4 @@
-import { dbUrl, getGameSetting } from '../../../common/setting';
+import { dbUrl, GameList } from '../../../common/setting';
 import { RoomSettingModel } from '../../../model/roomSettingModel';
 import { TypesModel } from '../../../model/typesModel';
 import { UsersModel } from '../../../model/usersModel';
@@ -53,7 +53,7 @@ export class ServerService {
     }
 
     public async getRoomSetting(serverId: number, sub: number) {
-        let gameSetting = getGameSetting(serverId.toString());
+        let gameSetting = GameList.getGameSetting(serverId.toString());
         //更換DB
         this.roomSettingModel.setupDB(gameSetting.name);
         let setting = await this.roomSettingModel.getRoomSetting(serverId, sub);

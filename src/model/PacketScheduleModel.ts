@@ -1,6 +1,6 @@
 import { ModelBase } from '../base/modelBase';
 import { MockerJsonData } from '../common/type';
-import { getGameByName } from '../common/setting';
+import { GameList } from '../common/setting';
 export class PacketScheduleModel extends ModelBase {
     protected getCollectionName(): string {
         return 'PacketScheduleData';
@@ -33,7 +33,7 @@ export class PacketScheduleModel extends ModelBase {
     public async getScheduleGameList(uid?: string) {
         let dbList = await this.getDBList();
         let scheduleGameList = dbList.map((item) => {
-            let gameObj = getGameByName(item);
+            let gameObj = GameList.getGameByName(item);
             if (!gameObj) {
                 return {};
             }

@@ -1,4 +1,4 @@
-import { dbUrl, setGameList } from '../../../common/setting';
+import { dbUrl, GameList } from '../../../common/setting';
 import { UsersModel } from '../../../model/usersModel';
 import { GameListModel } from '../../../model/gameListModel';
 
@@ -11,7 +11,7 @@ export class GameService {
         await this.userModel.init(dbUrl, 'API');
         await this.gameListModel.init(dbUrl, 'API');
         let gameList = await this.getGamesList();
-        setGameList(gameList);
+        GameList.gameList = gameList;
     }
 
     public async getUserData(uid: string) {
