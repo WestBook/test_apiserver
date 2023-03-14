@@ -8,11 +8,11 @@ const getLobbyUrl = (hostname: string) => {
 };
 
 let GameList;
-export const setGameList = (gameList) => {
+const setGameList = (gameList) => {
     GameList = gameList;
 };
 
-export const getGameList = () => {
+const getGameList = () => {
     return GameList;
 };
 
@@ -31,4 +31,4 @@ const getGameSetting = (serverId: string) => {
     return { ...game, subType };
 };
 
-export { apiPort, dbUrl, getLobbyUrl, getGameByName, getGameSetting, getGameById };
+export { setGameList, getGameList, apiPort, dbUrl, getLobbyUrl, getGameByName, getGameSetting, getGameById };
