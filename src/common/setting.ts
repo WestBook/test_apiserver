@@ -12,6 +12,10 @@ export const setGameList = (gameList) => {
     GameList = gameList;
 };
 
+export const getGameList = () => {
+    return GameList;
+};
+
 const getGameByName = (name: string) => {
     return GameList.find((item) => item.name === name);
 };
