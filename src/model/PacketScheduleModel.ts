@@ -1,6 +1,5 @@
 import { ModelBase } from '../base/modelBase';
 import { MockerJsonData } from '../common/type';
-import { GameList } from '../common/setting';
 export class PacketScheduleModel extends ModelBase {
     protected getCollectionName(): string {
         return 'PacketScheduleData';
@@ -28,22 +27,6 @@ export class PacketScheduleModel extends ModelBase {
             datas.push(jsonData);
         }
         return datas;
-    }
-
-    public async getScheduleGameList(uid?: string) {
-        let dbList = await this.getDBList();
-        let scheduleGameList = dbList.map((item) => {
-            let gameObj = GameList.getGameByName(item);
-            if (!gameObj) {
-                return {};
-            }
-            const { CH, gameId } = gameObj;
-            return {
-                name: CH,
-                id: gameId,
-            };
-        });
-        return scheduleGameList;
     }
 
     public async deleteMockData(uid: string, title: string) {

@@ -1,6 +1,5 @@
 import { NextFunction, Response, Request } from 'express';
 import { ControllerBase } from '../../base/controllerBase';
-import { GameList } from '../../common/setting';
 import { APIService } from './apiService';
 export class APIController extends ControllerBase<APIService> {
     public async getGameDBList(res: Response) {
@@ -104,16 +103,6 @@ export class APIController extends ControllerBase<APIService> {
             } else {
                 resData.data = await this.service.getScheduleData(gameId, uid);
             }
-        } catch (err) {
-            resData.code = -1;
-        }
-        res.send(resData);
-    }
-
-    public async getGameList(req: Request, res: Response, next?: NextFunction) {
-        let resData = { code: 0, data: {} };
-        try {
-            resData.data = GameList.gameList;
         } catch (err) {
             resData.code = -1;
         }

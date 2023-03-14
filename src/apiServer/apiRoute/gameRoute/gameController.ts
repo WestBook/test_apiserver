@@ -13,6 +13,7 @@ export class GameController extends ControllerBase<GameService> {
             return true;
         }
     }
+
     public async getPopularList(token: string, res: Response) {
         let uid = tokenParse(token);
         let userData = await this.service.getUserData(uid);
@@ -63,6 +64,17 @@ export class GameController extends ControllerBase<GameService> {
             console.log('updateNewGameList fail', error.toString());
             res.send({ code: -1, msg: '新遊推薦更新失敗' });
         }
+    }
+
+    public async getGameInfoByServerId(req: Request, res: Response) {
+        let serverId = req.params.serverId;
+        let resData = { code: 0, data: {} };
+        try {
+            resData.data = await this.service.getGamesInfo(serverId);
+        } catch (err) {
+            resData.code = -1;
+        }
+        return res.send(resData);
     }
 
     public async getCollectList(token: string, res: Response) {

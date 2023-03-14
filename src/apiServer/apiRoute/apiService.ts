@@ -1,24 +1,28 @@
-import { dbUrl, GameList } from '../../common/setting';
+import { dbUrl } from '../../common/setting';
 import { SettingModel } from '../../model/settingModel';
 import { UsersModel } from '../../model/usersModel';
 import { PacketScheduleModel } from '../../model/PacketScheduleModel';
 import { MongoClient } from 'mongodb';
 import { TypesModel } from '../../model/typesModel';
+import { GameInfoModel } from '../../model/gameInfoModel';
 
 export class APIService {
     private userModel: UsersModel;
     private settingModel: SettingModel;
     private packetScheduleModel: PacketScheduleModel;
     private typesModel: TypesModel;
+    private gameInfoModel: GameInfoModel;
     public async init() {
         let url = dbUrl;
         this.userModel = new UsersModel();
         this.settingModel = new SettingModel();
         this.packetScheduleModel = new PacketScheduleModel();
+        this.gameInfoModel = new GameInfoModel();
         this.typesModel = new TypesModel();
         await this.typesModel.init(dbUrl, 'API');
         await this.userModel.init(dbUrl, 'API');
         await this.settingModel.init(dbUrl, 'API');
+        await this.gameInfoModel.init(dbUrl, 'API');
         await this.packetScheduleModel.init(dbUrl);
     }
 
@@ -248,7 +252,7 @@ export class APIService {
 
     public async createMockData(gameId: string, uid: string, title: string, jsonData: any) {
         //切到對應的DB
-        let gameName = this.getGameName(gameId);
+        let gameName = await this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
             jsonData = JSON.parse(jsonData);
@@ -259,7 +263,7 @@ export class APIService {
 
     public async updateMockData(gameId: string, uid: string, title: string, jsonData: any) {
         //切到對應的DB
-        let gameName = this.getGameName(gameId);
+        let gameName = await this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
             jsonData = JSON.parse(jsonData);
@@ -269,7 +273,7 @@ export class APIService {
 
     public async applyScheduleData(gameId: string, uid: string, title: string) {
         //切到對應的DB
-        let gameName = this.getGameName(gameId);
+        let gameName = await this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
             await this.packetScheduleModel.updateData({ uid, apply: true }, { apply: false });
@@ -278,12 +282,27 @@ export class APIService {
     }
 
     public async getScheduleGameList(uid: string) {
-        return await this.packetScheduleModel.getScheduleGameList(uid);
+        // public async getScheduleGameList(uid?: string) {
+        //     let dbList = await this.getDBList();
+        //     let scheduleGameList = dbList.map((item) => {
+        //         let gameObj = GameList.getGameByName(item);
+        //         if (!gameObj) {
+        //             return {};
+        //         }
+        //         const { CH, gameId } = gameObj;
+        //         return {
+        //             name: CH,
+        //             id: gameId,
+        //         };
+        //     });
+        //     return scheduleGameList;
+        // }
+        return await this.gameInfoModel.getAllGameInfo();
     }
 
     public async getScheduleData(gameId: string, uid: string) {
         //切到對應的DB
-        let gameName = this.getGameName(gameId);
+        let gameName = await this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
             return await this.packetScheduleModel.getMockData(uid);
@@ -292,7 +311,7 @@ export class APIService {
 
     public async getApplyScheduleData(gameId: string, uid: string) {
         //切到對應的DB
-        let gameName = this.getGameName(gameId);
+        let gameName = await this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
             return await this.packetScheduleModel.getApplyMockData(uid);
@@ -300,15 +319,15 @@ export class APIService {
     }
 
     public async deleteScheduleData(gameId: string, uid: string, title: string) {
-        let gameName = this.getGameName(gameId);
+        let gameName = await this.getGameName(gameId);
         if (gameName.length > 0) {
             this.packetScheduleModel.setupDB(gameName);
             return await this.packetScheduleModel.deleteMockData(uid, title);
         }
     }
 
-    private getGameName(id: string) {
-        let gameObj = GameList.getGameById(id);
-        return gameObj.name;
+    private async getGameName(gameId: string) {
+        let { name } = await this.gameInfoModel.getGameInfoByGameId(gameId);
+        return name;
     }
 }

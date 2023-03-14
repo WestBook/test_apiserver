@@ -1,17 +1,19 @@
-import { dbUrl, GameList } from '../../../common/setting';
+import { dbUrl } from '../../../common/setting';
 import { UsersModel } from '../../../model/usersModel';
 import { GameListModel } from '../../../model/gameListModel';
+import { GameInfoModel } from '../../../model/gameInfoModel';
 
 export class GameService {
     private userModel: UsersModel;
     private gameListModel: GameListModel;
+    private gameInfoModel: GameInfoModel;
     public async init() {
         this.userModel = new UsersModel();
         this.gameListModel = new GameListModel();
+        this.gameInfoModel = new GameInfoModel();
         await this.userModel.init(dbUrl, 'API');
         await this.gameListModel.init(dbUrl, 'API');
-        let gameList = await this.getGamesList();
-        GameList.gameList = gameList;
+        await this.gameInfoModel.init(dbUrl, 'API');
     }
 
     public async getUserData(uid: string) {
@@ -34,10 +36,8 @@ export class GameService {
         return newGameList;
     }
 
-    public async getGamesList(): Promise<Array<number>> {
-        let data = await this.gameListModel.getGameList();
-        const { GameList } = data;
-        return GameList;
+    public async getGamesInfo(serverId: string): Promise<Object> {
+        return await this.gameInfoModel.getGameInfoByServerId(serverId);
     }
 
     public async updatePopularList(list: Array<number>) {
