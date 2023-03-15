@@ -282,7 +282,14 @@ export class APIService {
     }
 
     public async getScheduleGameList(uid: string) {
-        return await this.gameInfoModel.getAllGameInfo();
+        let allGameInfo = await this.gameInfoModel.getAllGameInfo();
+        let scheduleGameInfo = allGameInfo.map((item) => {
+            return {
+                name: item.CH,
+                id: item.gameId,
+            };
+        });
+        return scheduleGameInfo;
     }
 
     public async getGamesInfo(serverId: string): Promise<Object> {
