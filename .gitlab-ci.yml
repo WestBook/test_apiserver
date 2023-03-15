@@ -26,4 +26,3 @@ deploy_job:
   script:
     - cp -f dist/apiServer.js /home/apiServer/
     - pm2 restart apiServer
-  
