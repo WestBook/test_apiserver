@@ -66,17 +66,6 @@ export class GameController extends ControllerBase<GameService> {
         }
     }
 
-    public async getGameInfoByServerId(req: Request, res: Response) {
-        let serverId = req.params.serverId;
-        let resData = { code: 0, data: {} };
-        try {
-            resData.data = await this.service.getGamesInfo(serverId);
-        } catch (err) {
-            resData.code = -1;
-        }
-        return res.send(resData);
-    }
-
     public async getCollectList(token: string, res: Response) {
         const uid = tokenParse(token);
         const isUidCheck = this.uidCheck(uid, res);

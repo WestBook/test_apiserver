@@ -42,11 +42,6 @@ export class GameRoute extends RouteBase {
             this.gameController.updateNewGameList(req, res, next);
         });
 
-        // 取得GameInfo
-        this.Router.get('/mock/gameInfo/:serverId', (req: Request, res: Response, next?: NextFunction) => {
-            this.gameController.getGameInfoByServerId(req, res);
-        });
-
         // 取得收藏列表
         this.Router.post('/collectList.do', async (req: Request, res: Response, next?: NextFunction) => {
             const { token } = req.headers;

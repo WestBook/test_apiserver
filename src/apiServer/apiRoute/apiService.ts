@@ -282,22 +282,11 @@ export class APIService {
     }
 
     public async getScheduleGameList(uid: string) {
-        // public async getScheduleGameList(uid?: string) {
-        //     let dbList = await this.getDBList();
-        //     let scheduleGameList = dbList.map((item) => {
-        //         let gameObj = GameList.getGameByName(item);
-        //         if (!gameObj) {
-        //             return {};
-        //         }
-        //         const { CH, gameId } = gameObj;
-        //         return {
-        //             name: CH,
-        //             id: gameId,
-        //         };
-        //     });
-        //     return scheduleGameList;
-        // }
         return await this.gameInfoModel.getAllGameInfo();
+    }
+
+    public async getGamesInfo(serverId: string): Promise<Object> {
+        return await this.gameInfoModel.getGameInfoByServerId(serverId);
     }
 
     public async getScheduleData(gameId: string, uid: string) {

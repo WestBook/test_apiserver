@@ -109,6 +109,17 @@ export class APIController extends ControllerBase<APIService> {
         res.send(resData);
     }
 
+    public async getGameInfoByServerId(req: Request, res: Response) {
+        let serverId = req.params.serverId;
+        let resData = { code: 0, data: {} };
+        try {
+            resData.data = await this.service.getGamesInfo(serverId);
+        } catch (err) {
+            resData.code = -1;
+        }
+        return res.send(resData);
+    }
+
     public async getApplyScheduleData(req: Request, res: Response, next?: NextFunction) {}
 
     public async deleteScheduleData(req: Request, res: Response, next?: NextFunction) {

@@ -36,10 +36,6 @@ export class GameService {
         return newGameList;
     }
 
-    public async getGamesInfo(serverId: string): Promise<Object> {
-        return await this.gameInfoModel.getGameInfoByServerId(serverId);
-    }
-
     public async updatePopularList(list: Array<number>) {
         return await this.gameListModel.updatePopularList(list);
     }
