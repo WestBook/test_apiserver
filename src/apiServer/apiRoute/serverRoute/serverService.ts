@@ -1,13 +1,15 @@
-import { dbUrl, GameList } from '../../../common/setting';
+import { dbUrl } from '../../../common/setting';
 import { RoomSettingModel } from '../../../model/roomSettingModel';
 import { TypesModel } from '../../../model/typesModel';
 import { UsersModel } from '../../../model/usersModel';
 import { Db } from 'mongodb';
+import { GameInfoModel } from '../../../model/gameInfoModel';
 
 export class ServerService {
     private userModel: UsersModel;
     private typesModel: TypesModel;
     private roomSettingModel: RoomSettingModel;
+    private gameInfoModel: GameInfoModel;
     private db: Db;
     public async init() {
         let url = dbUrl;
@@ -17,6 +19,8 @@ export class ServerService {
         await this.typesModel.init(url, 'API');
         this.roomSettingModel = new RoomSettingModel();
         await this.roomSettingModel.init(url);
+        this.gameInfoModel = new GameInfoModel();
+        await this.gameInfoModel.init(url, 'API');
     }
 
     public async getTypesData() {
@@ -53,7 +57,7 @@ export class ServerService {
     }
 
     public async getRoomSetting(serverId: number, sub: number) {
-        let gameSetting = GameList.getGameSetting(serverId.toString());
+        let gameSetting = await this.gameInfoModel.getGameInfoByServerId(serverId.toString());
         //更換DB
         this.roomSettingModel.setupDB(gameSetting.name);
         let setting = await this.roomSettingModel.getRoomSetting(serverId, sub);

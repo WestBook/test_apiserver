@@ -18,10 +18,6 @@ export class GameListModel extends ModelBase {
         return await this.findData({ type: 'newGame' });
     }
 
-    public async getGameList() {
-        return await this.findData({ type: 'lobby' });
-    }
-
     public async updateNewGameList(dataList: Array<number>) {
         let query = { type: 'newGame' };
         return await this.updateData(query, { newGameList: dataList });

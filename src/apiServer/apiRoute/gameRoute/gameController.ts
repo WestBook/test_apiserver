@@ -13,6 +13,7 @@ export class GameController extends ControllerBase<GameService> {
             return true;
         }
     }
+
     public async getPopularList(token: string, res: Response) {
         let uid = tokenParse(token);
         let userData = await this.service.getUserData(uid);

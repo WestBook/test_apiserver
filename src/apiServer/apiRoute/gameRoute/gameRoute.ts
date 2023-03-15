@@ -41,6 +41,7 @@ export class GameRoute extends RouteBase {
         this.Router.post('/updateNewGameList.do', (req: Request, res: Response, next?: NextFunction) => {
             this.gameController.updateNewGameList(req, res, next);
         });
+
         // 取得收藏列表
         this.Router.post('/collectList.do', async (req: Request, res: Response, next?: NextFunction) => {
             const { token } = req.headers;

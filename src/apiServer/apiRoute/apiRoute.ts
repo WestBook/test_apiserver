@@ -96,8 +96,9 @@ export class ApiRoute extends RouteBase {
             this.controller.getScheduleData(req, res, true);
         });
 
-        this.Router.get('/mock/gameList', (req: Request, res: Response, next?: NextFunction) => {
-            this.controller.getGameList(req, res);
+        // 取得GameInfo
+        this.Router.get('/mock/gameInfo/:serverId', (req: Request, res: Response, next?: NextFunction) => {
+            this.controller.getGameInfoByServerId(req, res);
         });
 
         this.Router.post('/mock/schedule/:uid/:gameId', (req: Request, res: Response, next?: NextFunction) => {
