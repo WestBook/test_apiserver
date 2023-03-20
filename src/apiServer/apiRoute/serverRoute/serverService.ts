@@ -33,6 +33,10 @@ export class ServerService {
         return { gameType, type };
     }
 
+    public async updateTypes(list: Array<number>) {
+        return await this.typesModel.updateTypes(list);
+    }
+
     public async getUserData(uid: string) {
         let data: any = await this.userModel.getUserData(uid);
         if (data == null) {

@@ -7,7 +7,7 @@ export class ServerController extends ControllerBase<ServerService> {
         let data = await this.service.getTypesData();
         let resData = {
             serverTypeResp: data,
-            code: 0
+            code: 0,
         };
         if (data == null) {
             resData.code = -1;
@@ -15,11 +15,23 @@ export class ServerController extends ControllerBase<ServerService> {
         res.send(resData);
     }
 
+    public async updateTypes(req: Request, res: Response, next: NextFunction) {
+        const { list } = req.body;
+        try {
+            let result = await this.service.updateTypes(list);
+            console.log('大廳排序更新成功');
+            res.send({ code: 0, msg: '大廳排序更新成功' });
+        } catch (error) {
+            console.log('updateTypes fail: ', error.toString());
+            res.send({ code: -1, msg: '大廳排序更新失敗' });
+        }
+    }
+
     public async getCheckData(req: Request, res: Response, next: NextFunction) {
         let data = await this.service.getCheckData();
         let resData = {
             checkRes: data,
-            code: 0
+            code: 0,
         };
         if (data == null) {
             resData.code = -1;
