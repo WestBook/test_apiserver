@@ -12,9 +12,14 @@ export class ServerRoute extends RouteBase {
     }
 
     protected registerRoute(): void {
-        // 取得遊戲列表
+        // 取得大廳遊戲列表
         this.Router.post('/types.do', (req: Request, res: Response, next: NextFunction) => {
             this.serverController.getTypes(req, res, next);
+        });
+
+        // 更新大廳遊戲排序
+        this.Router.post('/updateTypes.do', (req: Request, res: Response, next?: NextFunction) => {
+            this.serverController.updateTypes(req, res, next);
         });
 
         // 首次進遊戲帳號進底分房間提示
