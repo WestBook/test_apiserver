@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 import { ControllerBase } from '../../base/controllerBase';
 import { APIService } from './apiService';
+import { CreateToken } from '../../common/token';
 export class APIController extends ControllerBase<APIService> {
     public async getGameDBList(res: Response) {
         let data = await this.service.getGameDBList();
@@ -147,12 +148,14 @@ export class APIController extends ControllerBase<APIService> {
 
     public getAccountInfo(user) {
         const { nickName, score, userId, account, inGame } = user;
+        let token = CreateToken(userId);
         return {
             nickName,
             score,
             userId,
             account,
             status: inGame ? 1 : 0,
+            token,
         };
     }
 
