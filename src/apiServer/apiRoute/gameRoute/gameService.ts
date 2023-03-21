@@ -2,15 +2,18 @@ import { dbUrl } from '../../../common/setting';
 import { UsersModel } from '../../../model/usersModel';
 import { GameListModel } from '../../../model/gameListModel';
 import { GameInfoModel } from '../../../model/gameInfoModel';
+import { RoomSettingModel } from '../../../model/roomSettingModel';
 
 export class GameService {
     private userModel: UsersModel;
     private gameListModel: GameListModel;
     private gameInfoModel: GameInfoModel;
+    private roomSettingModel: RoomSettingModel;
     public async init() {
         this.userModel = new UsersModel();
         this.gameListModel = new GameListModel();
         this.gameInfoModel = new GameInfoModel();
+        this.roomSettingModel = new RoomSettingModel();
         await this.userModel.init(dbUrl, 'API');
         await this.gameListModel.init(dbUrl, 'API');
         await this.gameInfoModel.init(dbUrl, 'API');
@@ -71,5 +74,15 @@ export class GameService {
         let userData = await this.getUserData(uid);
         userData.score = score;
         await this.userModel.updateUserScore(uid, score);
+    }
+
+    public async getAllRoomSetting(gameName: string) {
+        await this.roomSettingModel.init(dbUrl, gameName);
+        return await this.roomSettingModel.getAllRoomSetting();
+    }
+
+    public async getGameID(gameName: string) {
+        let gameID = await this.gameInfoModel.getGameIdByGameName(gameName);
+        return gameID;
     }
 }

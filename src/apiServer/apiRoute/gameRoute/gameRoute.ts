@@ -75,5 +75,14 @@ export class GameRoute extends RouteBase {
         this.Router.get('/getUserData/:uid', (req: Request, res: Response, next?: NextFunction) => {
             this.gameController.getUserData(req, res, next);
         });
+
+        // 遊戲資訊
+        this.Router.get('/getAllRoomSetting/:gameName', (req: Request, res: Response, next?: NextFunction) => {
+            this.gameController.getAllRoomSetting(req, res, next);
+        });
+
+        this.Router.get('/getGameID/:gameName', (req: Request, res: Response, next?: NextFunction) => {
+            this.gameController.getGameID(req, res, next);
+        });
     }
 }

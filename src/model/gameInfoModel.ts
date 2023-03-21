@@ -20,4 +20,9 @@ export class GameInfoModel extends ModelBase {
     public async getAllGameInfo() {
         return await this.findAllData();
     }
+
+    public async getGameIdByGameName(gameName: string) {
+        let gameInfo = await this.findData({ name: gameName });
+        return gameInfo.gameId;
+    }
 }
