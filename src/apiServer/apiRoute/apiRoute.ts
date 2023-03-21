@@ -126,5 +126,8 @@ export class ApiRoute extends RouteBase {
         this.Router.post('/db/creategame', (req: Request, res: Response, next?: NextFunction) => {
             this.controller.createGame(req, res);
         });
+        this.Router.get('/db/gameinfo', (req: Request, res: Response, next?: NextFunction) => {
+            this.controller.getGameInfoList(req, res);
+        });
     }
 }

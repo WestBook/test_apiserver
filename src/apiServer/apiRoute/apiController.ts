@@ -24,9 +24,9 @@ export class APIController extends ControllerBase<APIService> {
         res.send(resData);
     }
 
-    public async gameExistCheck(gameId: string) {
+    public async gameExistCheck(gameName: string) {
         let dbList = await this.service.getGameDBList();
-        return dbList.indexOf(gameId) != -1;
+        return dbList.indexOf(gameName) != -1;
     }
 
     public async typeExistCheck(gameNo: number) {
@@ -36,27 +36,28 @@ export class APIController extends ControllerBase<APIService> {
     }
 
     public async createGame(req: Request, res: Response) {
-        let { gameId, gameNo, gameType, roomSetting } = req.body;
-        console.log(roomSetting);
-        let isGameExist = await this.gameExistCheck(gameId);
+        let { gameName, chName, gameNo, setting } = req.body;
+        console.log(setting);
+        let isGameExist = await this.gameExistCheck(gameName);
         let isTypeExist = await this.typeExistCheck(gameNo);
         let resData = { data: {}, code: 0 };
-        if (isGameExist) {
-            console.log('updateGame');
-            await this.service.updateGame(gameId, gameType, roomSetting);
-            res.send(resData);
-        } else if (isTypeExist) {
-            console.log(`遊戲編號${gameNo}已使用`);
+        if (isGameExist || isTypeExist) {
+            console.log(`遊戲名稱or編號已使用`);
             res.send({
                 code: -1,
-                msg: '遊戲編號已使用',
+                msg: '遊戲名稱or編號已使用',
             });
         } else {
             console.log('createGame');
             // 儲存遊戲編號
             await this.service.createGameType(gameNo);
+            await this.service.createGameInfo({
+                name: gameName,
+                CH: chName,
+                gameId: gameNo,
+            });
             // 儲存遊戲資料
-            await this.service.createRoomSetting(gameId, gameType, roomSetting);
+            await this.service.createRoomSetting(gameName, setting);
             res.send(resData);
         }
     }
@@ -104,6 +105,17 @@ export class APIController extends ControllerBase<APIService> {
             } else {
                 resData.data = await this.service.getScheduleData(gameId, uid);
             }
+        } catch (err) {
+            resData.code = -1;
+        }
+        res.send(resData);
+    }
+
+    public async getGameInfoList(req: Request, res: Response) {
+        let resData = { code: 0, data: [] };
+        try {
+            let data = await this.service.getAllGameInfo();
+            resData.data = data;
         } catch (err) {
             resData.code = -1;
         }

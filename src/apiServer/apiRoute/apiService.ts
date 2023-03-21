@@ -36,7 +36,7 @@ export class APIService {
     }
 
     private async updateTypesData(id, data) {
-        return await this.typesModel.updateData({ _id: id }, { $set: data });
+        return await this.typesModel.updateData({ _id: id }, { type: data });
     }
 
     public async getGameDBList(): Promise<Array<string>> {
@@ -59,7 +59,6 @@ export class APIService {
         const client = new MongoClient(`${dbUrl}/${gameName}`);
         let db = (await client.connect()).db();
         await db.createCollection('PacketScheduleData');
-        await db.createCollection('Room');
         await db.createCollection('RoomSetting');
         return db;
     }
@@ -115,7 +114,11 @@ export class APIService {
         let typeData = await this.getTypesData();
         const { _id, type } = typeData;
         type.push(gameNo);
-        return await this.updateTypesData(_id, typeData);
+        return await this.updateTypesData(_id, type);
+    }
+
+    public async createGameInfo(gameInfo: any) {
+        return await this.gameInfoModel.insertData(gameInfo);
     }
 
     private async updateBetGame(collection, roomSetting: Array<any>) {
@@ -155,42 +158,10 @@ export class APIService {
         });
     }
 
-    public async createRoomSetting(gameName, gameType, setting: Array<any>) {
+    public async createRoomSetting(gameName, setting: Array<any>) {
         let db = await this.createDB(gameName);
         let collection = await db.collection('RoomSetting');
-
-        let roomSetting = gameType === 'Bet' ? this.createBetSetting(setting) : this.createQzSetting(setting);
-        return await collection.insertMany(roomSetting);
-    }
-
-    private createBetSetting(setting: Array<any>) {
-        return setting.map((item, index) => {
-            const { serverId, betLimit, areaLimitScore, chipsConfig } = item;
-            return {
-                lessScore: betLimit,
-                maxGold: 0,
-                minGold: 0,
-                areaLimitScore,
-                serverID: serverId,
-                chipsConfig,
-                subType: index + 1,
-            };
-        });
-    }
-
-    private createQzSetting(setting: Array<any>) {
-        return setting.map((item, index) => {
-            const { serverId, betLimit, grab, multi } = item;
-            return {
-                lessScore: betLimit,
-                maxGold: 0,
-                minGold: 0,
-                grab,
-                multi,
-                serverID: serverId,
-                subType: index + 1,
-            };
-        });
+        return await collection.insertMany(setting);
     }
 
     public async getUserData(uid: string) {
@@ -290,6 +261,10 @@ export class APIService {
             };
         });
         return scheduleGameInfo;
+    }
+
+    public async getAllGameInfo() {
+        return await this.gameInfoModel.getAllGameInfo();
     }
 
     public async getGamesInfo(serverId: string): Promise<Object> {
