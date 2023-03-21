@@ -142,4 +142,40 @@ export class GameController extends ControllerBase<GameService> {
             res.send({ code: -1, msg: error });
         }
     }
+
+    public async getAllRoomSetting(req: Request, res: Response, next: NextFunction) {
+        const { gameName } = req.params;
+        try {
+            let roomSetting = await this.service.getAllRoomSetting(gameName);
+            if (!roomSetting) {
+                res.send({ code: -1, msg: `${roomSetting} no room setting` });
+            } else {
+                let data = roomSetting.reduce((pre, cur) => {
+                    let { _id, ...rest } = cur;
+                    pre.push({ ...rest });
+                    return pre;
+                }, []);
+                res.send({ code: 0, data });
+            }
+        } catch (error) {
+            console.log('get room setting fail.', error);
+            res.send({ code: -1, msg: error });
+        }
+    }
+
+    public async getGameID(req: Request, res: Response, next: NextFunction) {
+        const { gameName } = req.params;
+        console.log(`gameName`, gameName);
+        try {
+            let gameID = await this.service.getGameID(gameName);
+            if (!gameID) {
+                res.send({ code: -1, msg: `${gameName} no gameID` });
+            } else {
+                res.send({ code: 0, data: { gameID } });
+            }
+        } catch (error) {
+            console.log('get gameID fail.', error);
+            res.send({ code: -1, msg: error });
+        }
+    }
 }
