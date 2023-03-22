@@ -54,7 +54,7 @@ export class APIController extends ControllerBase<APIService> {
             await this.service.createGameInfo({
                 name: gameName,
                 CH: chName,
-                gameId: gameNo,
+                gameId: gameNo.toString(),
             });
             // 儲存遊戲資料
             await this.service.createRoomSetting(gameName, setting);
