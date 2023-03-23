@@ -13,5 +13,4 @@ export class AppRoute extends RouteBase {
         });
         this.Router.use('/test/api', this.apiRoute.Router);
     }
-    //
 }
