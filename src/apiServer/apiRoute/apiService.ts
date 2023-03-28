@@ -5,6 +5,7 @@ import { PacketScheduleModel } from '../../model/PacketScheduleModel';
 import { MongoClient } from 'mongodb';
 import { TypesModel } from '../../model/typesModel';
 import { GameInfoModel } from '../../model/gameInfoModel';
+import { RoleModel } from '../../model/roleModel';
 
 export class APIService {
     private userModel: UsersModel;
@@ -12,6 +13,7 @@ export class APIService {
     private packetScheduleModel: PacketScheduleModel;
     private typesModel: TypesModel;
     private gameInfoModel: GameInfoModel;
+    private roleModel: RoleModel;
     public async init() {
         let url = dbUrl;
         this.userModel = new UsersModel();
@@ -19,10 +21,12 @@ export class APIService {
         this.packetScheduleModel = new PacketScheduleModel();
         this.gameInfoModel = new GameInfoModel();
         this.typesModel = new TypesModel();
+        this.roleModel = new RoleModel();
         await this.typesModel.init(dbUrl, 'API');
         await this.userModel.init(dbUrl, 'API');
         await this.settingModel.init(dbUrl, 'API');
         await this.gameInfoModel.init(dbUrl, 'API');
+        await this.roleModel.init(dbUrl, 'API');
         await this.packetScheduleModel.init(dbUrl);
     }
 
@@ -83,6 +87,7 @@ export class APIService {
             userAddress: '台北',
             inGame: 0,
             collectList: [],
+            role: 'basic',
         };
     }
 
@@ -93,8 +98,20 @@ export class APIService {
         return user;
     }
 
+    public async getAllUser() {
+        return await this.userModel.getAllUser();
+    }
+
     public async createUser(user) {
         return await this.userModel.insertData(user);
+    }
+
+    public async getAllRole() {
+        return await this.roleModel.findAllData();
+    }
+
+    public async updateRole(account, role) {
+        return await this.userModel.updateData({ account }, { role });
     }
 
     public async updateGame(gameName, gameType, roomSetting) {

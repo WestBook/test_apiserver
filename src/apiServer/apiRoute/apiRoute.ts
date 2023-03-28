@@ -53,6 +53,10 @@ export class ApiRoute extends RouteBase {
             }
         });
 
+        this.Router.post('/account/list.do', (req: Request, res: Response, next: NextFunction) => {
+            this.controller.getAllUser(req, res, next);
+        });
+
         this.Router.post('/account/create.do', async (req: Request, res: Response, next: NextFunction) => {
             this.controller.createUser(req, res, next);
         });
@@ -63,6 +67,15 @@ export class ApiRoute extends RouteBase {
 
         this.Router.post('/account/transfer.do', (req: Request, res: Response, next: NextFunction) => {
             this.controller.transferBalance(req, res, next);
+        });
+
+        this.Router.post('/account/role/update.do', (req: Request, res: Response, next: NextFunction) => {
+            this.controller.updateRole(req, res, next);
+        });
+
+        //role
+        this.Router.get('/role/list.do', (req: Request, res: Response, next: NextFunction) => {
+            this.controller.getAllRole(req, res, next);
         });
 
         // notice/announce/list.do
