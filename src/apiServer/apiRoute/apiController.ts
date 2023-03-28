@@ -171,6 +171,23 @@ export class APIController extends ControllerBase<APIService> {
         };
     }
 
+    public async getAllUser(req: Request, res: Response, next: NextFunction) {
+        const result = await this.service.getAllUser();
+        if (result == null) {
+            console.error('[Error] no user data');
+            res.send({ code: -1, error: 'no user data' });
+        } else {
+            const allUser = result.map((el) => {
+                return {
+                    account: el.account,
+                    nickName: el.nickName,
+                    role: el.role,
+                };
+            });
+            res.send({ code: 0, data: allUser });
+        }
+    }
+
     public async createUser(req: Request, res: Response, next: NextFunction) {
         const { account, pwd } = req.body;
         if (!account || !pwd) {
@@ -302,6 +319,38 @@ export class APIController extends ControllerBase<APIService> {
                 settingRes: data,
                 code: 0,
             });
+        }
+        if (next) {
+            next();
+        }
+    }
+    public async getAllRole(req: Request, res: Response, next: NextFunction) {
+        let result = await this.service.getAllRole();
+        if (result == null) {
+            console.error('[Error] no role data');
+            res.send({ code: -1, error: 'no role data' });
+        } else {
+            const allRole = result.map((el) => {
+                const { _id, ...rest } = el;
+                return {
+                    ...rest,
+                };
+            });
+            res.send({ code: 0, data: allRole });
+        }
+        if (next) {
+            next();
+        }
+    }
+
+    public async updateRole(req: Request, res: Response, next: NextFunction) {
+        const { account, role } = req.body;
+        let result = await this.service.updateRole(account, role);
+        if (result.modifiedCount == 0) {
+            console.error('update failed');
+            res.send({ code: -1, error: 'update failed' });
+        } else {
+            res.send({ code: 0, msg: '已成功更新權限' });
         }
         if (next) {
             next();

@@ -6,7 +6,7 @@ export abstract class ModelBase {
         try {
             let client = new MongoClient(url);
             this.connection = await client.connect();
-            this.setupDB(dbName);         
+            this.setupDB(dbName);
         } catch (error) {
             console.error('[Error] Mongodb is not started');
         }
@@ -18,8 +18,10 @@ export abstract class ModelBase {
 
     public async getDBList(): Promise<Array<string>> {
         let db = this.connection.db();
-        let allDb = (await db.admin().listDatabases({nameOnly: true})).databases;
-        let gameDbList = allDb?.map(db => db.name).filter(db => db !== 'API' && db != 'admin' && db != 'local' && db != 'config');
+        let allDb = (await db.admin().listDatabases({ nameOnly: true })).databases;
+        let gameDbList = allDb
+            ?.map((db) => db.name)
+            .filter((db) => db !== 'API' && db != 'admin' && db != 'local' && db != 'config');
         return gameDbList;
     }
 
@@ -33,7 +35,7 @@ export abstract class ModelBase {
         try {
             let collection = this.getCollection();
             return await collection.insertOne(data);
-        } catch(err) {
+        } catch (err) {
             console.log('[Error] Model insert error', err);
         }
     }
