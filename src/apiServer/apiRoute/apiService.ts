@@ -110,8 +110,40 @@ export class APIService {
         return await this.roleModel.findAllData();
     }
 
-    public async updateRole(account, role) {
+    public async updateUserRole(account, role) {
         return await this.userModel.updateData({ account }, { role });
+    }
+
+    public async updateRoleData(key, data) {
+        return await this.roleModel.updateData({ key }, { ...data });
+    }
+
+    public async getDefaultRoleData(key, title) {
+        return {
+            key,
+            title,
+            permission: {
+                routePath: [],
+                toolLink: [],
+            },
+            deletable: true,
+        };
+    }
+
+    public async getRoleByKey(key) {
+        return await this.roleModel.findData({ key });
+    }
+
+    public async getRoleById(id) {
+        return await this.roleModel.findData({ _id: id });
+    }
+
+    public async createRole(data) {
+        return await this.roleModel.insertData(data);
+    }
+
+    public async deleteRole(key) {
+        return await this.roleModel.deleteData({ key });
     }
 
     public async updateGame(gameName, gameType, roomSetting) {
