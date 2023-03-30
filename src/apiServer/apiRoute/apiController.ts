@@ -158,8 +158,9 @@ export class APIController extends ControllerBase<APIService> {
         res.send(resData);
     }
 
-    public getAccountInfo(user) {
-        const { nickName, score, userId, account, inGame } = user;
+    public async getAccountInfo(user) {
+        const { nickName, score, userId, account, inGame, role } = user;
+        const { permission } = await this.service.getRoleByKey(role);
         let token = CreateToken(userId);
         return {
             nickName,
@@ -168,6 +169,7 @@ export class APIController extends ControllerBase<APIService> {
             account,
             status: inGame ? 1 : 0,
             token,
+            permission,
         };
     }
 
@@ -201,7 +203,7 @@ export class APIController extends ControllerBase<APIService> {
             let defaultUser = await this.service.getDefaultUserData(account, pwd);
             let insertRes = await this.service.createUser(defaultUser);
             if (insertRes) {
-                let info = this.getAccountInfo(defaultUser);
+                let info = await this.getAccountInfo(defaultUser);
                 res.send({ code: 0, msg: '註冊成功', data: info });
             } else {
                 res.send({ code: -1, msg: '註冊失敗' });
@@ -221,7 +223,7 @@ export class APIController extends ControllerBase<APIService> {
         } else if (pwd != existUser.pwd) {
             res.send({ code: -1, msg: '密碼錯誤，請重新輸入' });
         } else {
-            let info = this.getAccountInfo(existUser);
+            let info = await this.getAccountInfo(existUser);
             res.send({ code: 0, msg: '登入成功', data: info });
         }
     }
@@ -343,14 +345,60 @@ export class APIController extends ControllerBase<APIService> {
         }
     }
 
-    public async updateRole(req: Request, res: Response, next: NextFunction) {
+    public async updateUserRole(req: Request, res: Response, next: NextFunction) {
         const { account, role } = req.body;
-        let result = await this.service.updateRole(account, role);
+        let result = await this.service.updateUserRole(account, role);
         if (result.modifiedCount == 0) {
             console.error('update failed');
-            res.send({ code: -1, error: 'update failed' });
+            res.send({ code: -1, msg: '變更權限失敗', error: 'update failed' });
         } else {
             res.send({ code: 0, msg: '已成功更新權限' });
+        }
+        if (next) {
+            next();
+        }
+    }
+
+    public async updateRoleData(req: Request, res: Response, next: NextFunction) {
+        const { key, data } = req.body;
+        let result = await this.service.updateRoleData(key, data);
+        if (result.modifiedCount == 0) {
+            res.send({ code: -1, msg: '變更權限失敗', error: 'update failed' });
+        } else {
+            res.send({ code: 0, msg: '已成功更新權限' });
+        }
+        if (next) {
+            next();
+        }
+    }
+    public async createRole(req: Request, res: Response, next: NextFunction) {
+        const { key, title } = req.body;
+
+        let existRole = await this.service.getRoleByKey(key);
+        if (existRole) {
+            res.send({ code: -1, msg: 'key值已存在' });
+        } else {
+            const roleData = await this.service.getDefaultRoleData(key, title);
+            let result = await this.service.createRole(roleData);
+            if (!result.acknowledged) {
+                res.send({ code: -1, msg: '新增權限群組失敗' });
+            } else {
+                let insertRole = await this.service.getRoleById(result.insertedId);
+                const { _id, ...rest } = insertRole;
+                res.send({ code: 0, msg: '新增權限群組成功', data: { insertData: rest } });
+            }
+            if (next) {
+                next();
+            }
+        }
+    }
+    public async deleteRole(req: Request, res: Response, next: NextFunction) {
+        const { key } = req.body;
+        let result = await this.service.deleteRole(key);
+        if (result.deletedCount > 0) {
+            res.send({ code: 0, msg: '已成功刪除權限群組' });
+        } else {
+            res.send({ code: -1, msg: '刪除權限群組失敗', error: 'update failed' });
         }
         if (next) {
             next();

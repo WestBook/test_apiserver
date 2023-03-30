@@ -70,12 +70,24 @@ export class ApiRoute extends RouteBase {
         });
 
         this.Router.post('/account/role/update.do', (req: Request, res: Response, next: NextFunction) => {
-            this.controller.updateRole(req, res, next);
+            this.controller.updateUserRole(req, res, next);
         });
 
         //role
         this.Router.get('/role/list.do', (req: Request, res: Response, next: NextFunction) => {
             this.controller.getAllRole(req, res, next);
+        });
+
+        this.Router.post('/role/updateRole.do', (req: Request, res: Response, next: NextFunction) => {
+            this.controller.updateRoleData(req, res, next);
+        });
+
+        this.Router.post('/role/createRole.do', (req: Request, res: Response, next: NextFunction) => {
+            this.controller.createRole(req, res, next);
+        });
+
+        this.Router.post('/role/deleteRole.do', (req: Request, res: Response, next: NextFunction) => {
+            this.controller.deleteRole(req, res, next);
         });
 
         // notice/announce/list.do
