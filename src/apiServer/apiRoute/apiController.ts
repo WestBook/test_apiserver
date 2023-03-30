@@ -158,8 +158,9 @@ export class APIController extends ControllerBase<APIService> {
         res.send(resData);
     }
 
-    public getAccountInfo(user) {
-        const { nickName, score, userId, account, inGame } = user;
+    public async getAccountInfo(user) {
+        const { nickName, score, userId, account, inGame, role } = user;
+        const { permission } = await this.service.getRoleByKey(role);
         let token = CreateToken(userId);
         return {
             nickName,
@@ -168,6 +169,7 @@ export class APIController extends ControllerBase<APIService> {
             account,
             status: inGame ? 1 : 0,
             token,
+            permission,
         };
     }
 
@@ -201,7 +203,7 @@ export class APIController extends ControllerBase<APIService> {
             let defaultUser = await this.service.getDefaultUserData(account, pwd);
             let insertRes = await this.service.createUser(defaultUser);
             if (insertRes) {
-                let info = this.getAccountInfo(defaultUser);
+                let info = await this.getAccountInfo(defaultUser);
                 res.send({ code: 0, msg: '註冊成功', data: info });
             } else {
                 res.send({ code: -1, msg: '註冊失敗' });
@@ -221,7 +223,7 @@ export class APIController extends ControllerBase<APIService> {
         } else if (pwd != existUser.pwd) {
             res.send({ code: -1, msg: '密碼錯誤，請重新輸入' });
         } else {
-            let info = this.getAccountInfo(existUser);
+            let info = await this.getAccountInfo(existUser);
             res.send({ code: 0, msg: '登入成功', data: info });
         }
     }
