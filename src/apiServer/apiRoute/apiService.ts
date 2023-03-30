@@ -106,6 +106,10 @@ export class APIService {
         return await this.userModel.insertData(user);
     }
 
+    public async deleteUser(account) {
+        return await this.userModel.deleteData({ account });
+    }
+
     public async getAllRole() {
         return await this.roleModel.findAllData();
     }
