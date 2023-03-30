@@ -65,6 +65,10 @@ export class ApiRoute extends RouteBase {
             this.controller.userLogin(req, res, next);
         });
 
+        this.Router.post('/account/delete.do', async (req: Request, res: Response, next: NextFunction) => {
+            this.controller.deleteUser(req, res, next);
+        });
+
         this.Router.post('/account/transfer.do', (req: Request, res: Response, next: NextFunction) => {
             this.controller.transferBalance(req, res, next);
         });

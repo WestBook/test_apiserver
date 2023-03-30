@@ -210,6 +210,18 @@ export class APIController extends ControllerBase<APIService> {
             }
         }
     }
+    public async deleteUser(req: Request, res: Response, next: NextFunction) {
+        const { account } = req.body;
+        let result = await this.service.deleteUser(account);
+        if (result.deletedCount > 0) {
+            res.send({ code: 0, msg: '已成功刪除帳號' });
+        } else {
+            res.send({ code: -1, msg: '刪除帳號失敗' });
+        }
+        if (next) {
+            next();
+        }
+    }
 
     public async userLogin(req: Request, res: Response, next: NextFunction) {
         const { account, pwd } = req.body;
