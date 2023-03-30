@@ -235,6 +235,10 @@ export class APIService {
         return await this.userModel.getUserDataByAccount(account);
     }
 
+    public async getAllUserByRole(role) {
+        return await this.userModel.getAllUserByRole(role);
+    }
+
     public async getBannerData() {
         return {
             banner: [

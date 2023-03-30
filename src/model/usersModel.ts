@@ -17,6 +17,10 @@ export class UsersModel extends ModelBase {
         return await this.findData({ account });
     }
 
+    public async getAllUserByRole(role: string) {
+        return await this.findAllData({ role });
+    }
+
     public async updateUserScore(userId: string, score: string) {
         return await this.updateData({ userId }, { score });
     }
