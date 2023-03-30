@@ -394,14 +394,20 @@ export class APIController extends ControllerBase<APIService> {
     }
     public async deleteRole(req: Request, res: Response, next: NextFunction) {
         const { key } = req.body;
-        let result = await this.service.deleteRole(key);
-        if (result.deletedCount > 0) {
-            res.send({ code: 0, msg: '已成功刪除權限群組' });
+        //刪除權限群組時，先檢查是否有成員為該群組
+        let users = await this.service.getAllUserByRole(key);
+        if (users.length > 0) {
+            res.send({ code: -2, msg: '刪除權限群組失敗，有成員為該群組成員' });
         } else {
-            res.send({ code: -1, msg: '刪除權限群組失敗', error: 'update failed' });
-        }
-        if (next) {
-            next();
+            let deleteResult = await this.service.deleteRole(key);
+            if (deleteResult.deletedCount > 0) {
+                res.send({ code: 0, msg: '已成功刪除權限群組' });
+            } else {
+                res.send({ code: -1, msg: '刪除權限群組失敗', error: 'update failed' });
+            }
+            if (next) {
+                next();
+            }
         }
     }
 }
