@@ -8,7 +8,7 @@ export class GameInfoModel extends ModelBase {
     public async getGameInfoByServerId(serverId: string) {
         let gameId = serverId.slice(1, serverId.length - 1);
         let subType = serverId.slice(serverId.length - 1);
-        let rawGameInfo = await this.findData({ gameId: gameId.toString() });
+        let rawGameInfo = await this.findData({ gameId: Number(gameId).toString() });
         return { name: rawGameInfo.name, subType: subType };
     }
 
