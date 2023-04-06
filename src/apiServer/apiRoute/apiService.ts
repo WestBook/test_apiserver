@@ -74,7 +74,7 @@ export class APIService {
             account,
             userId: defaultUserId,
             pwd,
-            score: 0,
+            score: '0',
             frameId: 1,
             iconId: 1,
             vip: 1,
@@ -93,7 +93,8 @@ export class APIService {
 
     public async updateBalance(account: string, balance: number) {
         let user = await this.userModel.getUserDataByAccount(account);
-        user.score = Math.round(user.score + balance * 100);
+        let userScore = Number(user.score);
+        user.score = (userScore + balance).toString();
         await this.userModel.updateData({ account }, user);
         return user;
     }

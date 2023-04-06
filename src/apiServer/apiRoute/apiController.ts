@@ -236,7 +236,7 @@ export class APIController extends ControllerBase<APIService> {
             res.send({ code: -1, msg: '密碼錯誤，請重新輸入' });
         } else {
             let info = await this.getAccountInfo(existUser);
-            res.send({ code: 0, msg: '登入成功', data: info });
+            res.send({ code: 0, msg: '登入成功', data: { ...info, score: (info.score / 100).toFixed(2) } });
         }
     }
 
@@ -268,7 +268,7 @@ export class APIController extends ControllerBase<APIService> {
                 code: 0,
                 msg: '取得餘額成功',
                 data: {
-                    score,
+                    score: (score / 100).toFixed(2),
                     status,
                 },
             });
@@ -283,7 +283,7 @@ export class APIController extends ControllerBase<APIService> {
             res.send({ code: -1, msg: '請檢查帳號或上下分數值是否有誤' });
             return;
         }
-        const delta = Number(type) === 0 ? Number(balance) : -Number(balance);
+        const delta = Number(type) === 0 ? Math.round(Number(balance) * 100) : Math.round(Number(balance) * 100 * -1);
         const msgType = Number(type) === 0 ? '上分' : '下分';
         let updateUser = await this.service.updateBalance(account, delta);
         if (updateUser) {
@@ -291,7 +291,7 @@ export class APIController extends ControllerBase<APIService> {
                 code: 0,
                 msg: `${msgType}成功`,
                 data: {
-                    score: updateUser.score / 100,
+                    score: (updateUser.score / 100).toFixed(2),
                 },
             });
         } else {
