@@ -134,8 +134,11 @@ export class GameController extends ControllerBase<GameService> {
             if (!userData) {
                 res.send({ code: -1, msg: `${uid} no user data` });
             } else {
-                const { userId, score, frameId, iconId, vip, lv, scoreDelta } = userData;
-                res.send({ code: 0, data: { userId, score, frameId, iconId, vip, lv, scoreDelta } });
+                const { userId, score, frameId, iconId, vip, lv, scoreDelta, userAddress, nickName } = userData;
+                res.send({
+                    code: 0,
+                    data: { userId, score, frameId, iconId, vip, lv, scoreDelta, userAddress, nickName },
+                });
             }
         } catch (error) {
             console.log('get user data fail.', error);
