@@ -1,4 +1,5 @@
 import { Db, MongoClient } from 'mongodb';
+import log4 from '../common/log4';
 export abstract class ModelBase {
     private db: Db;
     private connection: MongoClient;
@@ -28,6 +29,9 @@ export abstract class ModelBase {
     protected abstract getCollectionName(): string;
 
     public getCollection() {
+        let collectionName = this.getCollectionName();
+        let dbName = this.db ? this.db.databaseName : 'no db';
+        log4([dbName, collectionName]);
         return this.db.collection(this.getCollectionName());
     }
 
@@ -50,6 +54,7 @@ export abstract class ModelBase {
     }
 
     public async findData(data = {}) {
+        log4([data]);
         let collection = await this.getCollection();
         return await collection.findOne(data);
     }
