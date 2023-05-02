@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 import { ControllerBase } from '../../../base/controllerBase';
 import { ServerService } from './serverService';
+import { slotGameType } from '../../../common/setting';
 
 export class ServerController extends ControllerBase<ServerService> {
     public async getTypes(req: Request, res: Response, next: NextFunction) {
@@ -42,9 +43,13 @@ export class ServerController extends ControllerBase<ServerService> {
     public async getListData(req: Request, res: Response, next: NextFunction) {
         let { uid } = req.body;
         let { type, sub } = req.body.serverReq;
-        let serverId = 5000 + type * 10 + sub;
+        let serverId = 5000 + type * 10;
         let accountData: any = await this.service.getUserData(uid);
         let { inGame } = accountData;
+        // slot game要把serverid上的roomid改為1,game server再用sub判斷在哪間房
+        let roomId = type in slotGameType ? 1 : sub;
+        serverId += roomId;
+
         // 已在遊戲中，返回該遊戲server資訊
         if (inGame) {
             res.send({ serverResp: { info: inGame }, code: 0 });
