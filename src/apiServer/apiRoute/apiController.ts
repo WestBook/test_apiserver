@@ -422,4 +422,15 @@ export class APIController extends ControllerBase<APIService> {
             }
         }
     }
+
+    public async updateUserSeverId(req: Request, res: Response, next: NextFunction) {
+        const { uid, serverId } = req.body;
+        try {
+            await this.service.updateUserServerId(uid, parseInt(serverId));
+            res.send({ code: 0, msg: `${uid} update serverId success` });
+        } catch (error) {
+            console.log('get user data fail.', error);
+            res.send({ code: -1, msg: error });
+        }
+    }
 }

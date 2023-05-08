@@ -88,6 +88,7 @@ export class APIService {
             inGame: 0,
             collectList: [],
             role: 'basic',
+            serverId: 0, // 遊戲中的serverId
         };
     }
 
@@ -358,5 +359,9 @@ export class APIService {
     private async getGameName(gameId: string) {
         let { name } = await this.gameInfoModel.getGameInfoByGameId(gameId);
         return name;
+    }
+
+    public async updateUserServerId(uid: string, serverId: number) {
+        await this.userModel.updateUserServerId(uid, serverId);
     }
 }
