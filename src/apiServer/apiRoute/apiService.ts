@@ -361,7 +361,9 @@ export class APIService {
         return name;
     }
 
-    public async updateUserServerId(uid: string, serverId: number) {
+    public async updateUserGame(uid: string, serverId: number) {
+        let inGame = serverId === 0 ? 0 : 1;
         await this.userModel.updateUserServerId(uid, serverId);
+        await this.userModel.updateUserInGame(uid, inGame);
     }
 }
