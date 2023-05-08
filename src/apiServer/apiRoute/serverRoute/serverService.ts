@@ -42,7 +42,8 @@ export class ServerService {
         if (data == null) {
             return null;
         }
-        let { frameId, userId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score } = data;
+        let { frameId, userId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score, inGame, serverId } =
+            data;
         return {
             userId,
             frame: frameId,
@@ -53,6 +54,8 @@ export class ServerService {
             nameChanged,
             nickname: nickName,
             score,
+            inGame,
+            serverId,
         };
     }
 
