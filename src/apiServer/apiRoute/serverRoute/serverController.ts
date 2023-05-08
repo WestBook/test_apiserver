@@ -45,14 +45,19 @@ export class ServerController extends ControllerBase<ServerService> {
         let { type, sub } = req.body.serverReq;
         let serverId = 5000 + type * 10;
         let accountData: any = await this.service.getUserData(uid);
-        let { inGame } = accountData;
+        let { inGame, serverId: userServerId } = accountData;
         // slot game要把serverid上的roomid改為1,game server再用sub判斷在哪間房
         let roomId = type in slotGameType ? 1 : sub;
         serverId += roomId;
 
-        // 已在遊戲中，返回該遊戲server資訊
-        if (inGame) {
-            res.send({ serverResp: { info: inGame }, code: 0 });
+        // 已在其他遊戲房中
+        if (inGame && serverId !== userServerId) {
+            let info = {
+                serverId: serverId,
+                serverType: type,
+                subType: roomId,
+            };
+            res.send({ serverResp: { info }, code: 0 });
         } else {
             let data = await this.service.getRoomSetting(serverId, sub);
             res.send({ serverResp: { servers: [data] }, code: 0 });
