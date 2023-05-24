@@ -77,6 +77,10 @@ export class ApiRoute extends RouteBase {
             this.controller.updateUserRole(req, res, next);
         });
 
+        this.Router.post('/account/updateUserSeverId.do', (req: Request, res: Response, next?: NextFunction) => {
+            this.controller.updateUserSeverId(req, res, next);
+        });
+
         //role
         this.Router.get('/role/list.do', (req: Request, res: Response, next: NextFunction) => {
             this.controller.getAllRole(req, res, next);

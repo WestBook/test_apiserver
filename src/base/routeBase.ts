@@ -10,10 +10,10 @@ export abstract class RouteBase {
 
     protected async tokenCheck(token: string, res: Response) {
         let result = await VerifyToken(token);
-        if(!result) {
-            res.send({code: -1, msg: 'token過期或錯誤'});
+        if (!result) {
+            res.send({ code: -201, msg: 'token過期或錯誤' });
             return Promise.reject();
         }
-        return Promise.resolve();;
+        return Promise.resolve();
     }
 }

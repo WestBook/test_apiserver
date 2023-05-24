@@ -25,6 +25,14 @@ export class UsersModel extends ModelBase {
         return await this.updateData({ userId }, { score });
     }
 
+    public async updateUserServerId(userId: string, serverId: number) {
+        return await this.updateData({ userId }, { serverId });
+    }
+
+    public async updateUserInGame(userId: string, inGame: number) {
+        return await this.updateData({ userId }, { inGame });
+    }
+
     public async createAgentUserID() {
         let existList = await this.findAllData();
         let existIdList = existList.map((item) => item.agentUserId);

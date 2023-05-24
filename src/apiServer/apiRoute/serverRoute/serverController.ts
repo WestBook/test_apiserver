@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 import { ControllerBase } from '../../../base/controllerBase';
 import { ServerService } from './serverService';
+import { slotGameType } from '../../../common/setting';
 
 export class ServerController extends ControllerBase<ServerService> {
     public async getTypes(req: Request, res: Response, next: NextFunction) {
@@ -42,14 +43,22 @@ export class ServerController extends ControllerBase<ServerService> {
     public async getListData(req: Request, res: Response, next: NextFunction) {
         let { uid } = req.body;
         let { type, sub } = req.body.serverReq;
-        let serverId = 5000 + type * 10 + sub;
+        let reqServerId = 5000 + type * 10;
         let accountData: any = await this.service.getUserData(uid);
-        let { inGame } = accountData;
-        // 已在遊戲中，返回該遊戲server資訊
-        if (inGame) {
-            res.send({ serverResp: { info: inGame }, code: 0 });
+        let { inGame, serverId: userServerId } = accountData;
+        // slot game要把serverid上的roomid改為1,game server再用sub判斷在哪間房
+        let roomId = type in slotGameType ? 1 : sub;
+        reqServerId += roomId;
+        // 已在其他遊戲房中
+        if (inGame && reqServerId !== userServerId) {
+            let info = {
+                serverId: userServerId,
+                serverType: parseInt(userServerId.toString().substring(1, 3)),
+                subType: userServerId % 10,
+            };
+            res.send({ serverResp: { info }, code: 0 });
         } else {
-            let data = await this.service.getRoomSetting(serverId, sub);
+            let data = await this.service.getRoomSetting(reqServerId, sub);
             res.send({ serverResp: { servers: [data] }, code: 0 });
         }
     }

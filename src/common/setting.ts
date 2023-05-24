@@ -6,5 +6,9 @@ const apiPort = 8084;
 const getLobbyUrl = (hostname: string) => {
     return isDev ? `http://${hostname}:8081` : 'http://192.168.1.158/lobby';
 };
+const slotGameType = {
+    13: 'csd',
+    22: 'lhdb',
+};
 
-export { apiPort, dbUrl, getLobbyUrl };
+export { apiPort, dbUrl, getLobbyUrl, slotGameType };
