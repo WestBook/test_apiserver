@@ -84,5 +84,9 @@ export class GameRoute extends RouteBase {
         this.Router.get('/getGameID/:gameName', (req: Request, res: Response, next?: NextFunction) => {
             this.gameController.getGameID(req, res, next);
         });
+
+        this.Router.get('/getVideoRoomInfo/:roomId', (req: Request, res: Response, next?: NextFunction) => {
+            this.gameController.getVideoRoomInfo(req, res, next);
+        });
     }
 }
