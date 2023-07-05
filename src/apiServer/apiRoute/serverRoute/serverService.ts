@@ -42,8 +42,21 @@ export class ServerService {
         if (data == null) {
             return null;
         }
-        let { frameId, userId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score, inGame, serverId } =
-            data;
+        let {
+            frameId,
+            userId,
+            iconId,
+            needVersion,
+            agentUserId,
+            vip,
+            nameChanged,
+            nickName,
+            score,
+            inGame,
+            serverId,
+            ccy,
+        } = data;
+
         return {
             userId,
             frame: frameId,
@@ -56,6 +69,7 @@ export class ServerService {
             score,
             inGame,
             serverId,
+            ccy: ccy || 'CNY',
         };
     }
 
@@ -63,19 +77,33 @@ export class ServerService {
         return ['0, 500'];
     }
 
-    public async getRoomSetting(serverId: number, sub: number) {
+    public async getRoomSetting(serverId: number, sub: number, ccy: string) {
         let gameSetting = await this.gameInfoModel.getGameInfoByServerId(serverId.toString());
         //更換DB
         this.roomSettingModel.setupDB(gameSetting.name);
         let setting = await this.roomSettingModel.getRoomSetting(serverId, sub);
         const { lessScore, maxGold, minGold, score, serverID, subType } = setting;
-        return {
-            lessScore,
-            maxGold,
-            minGold,
-            score,
-            serverID,
-            subType,
-        };
+        return [
+            {
+                ccy: ccy,
+                lessScore,
+                maxGold,
+                minGold,
+                score,
+                serverID,
+                subType,
+            },
+        ];
+    }
+
+    public async getAllRoomSetting(serverId: number, ccy: string) {
+        let gameSetting = await this.gameInfoModel.getGameInfoByServerId(serverId.toString());
+        //更換DB
+        this.roomSettingModel.setupDB(gameSetting.name);
+        let setting = await this.roomSettingModel.getAllRoomSetting();
+        let updatedSetting = setting.map((obj) => {
+            return { ...obj, ccy: ccy };
+        });
+        return updatedSetting;
     }
 }
