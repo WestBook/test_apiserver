@@ -101,13 +101,13 @@ export class GameController extends ControllerBase<GameService> {
     }
 
     public async forwardSite(req: Request, res: Response, next: NextFunction) {
-        const { account, gameType } = req.body;
+        const { account, gameType, isMultiLang } = req.body;
         try {
             let accountData = await this.service.getUserDataByAccount(account);
             const { userId } = accountData;
             const token = CreateToken(userId);
             const typeString = Number(gameType) === 0 ? '' : `&game=${gameType}`;
-            const forwardURL = getLobbyUrl(req.hostname) + `/?uid=${userId}&token=${token}${typeString}`;
+            const forwardURL = getLobbyUrl(req.hostname, isMultiLang) + `/?uid=${userId}&token=${token}${typeString}`;
             console.log('forwardURL: ', forwardURL);
             res.send({ code: 0, data: forwardURL });
         } catch (error) {
