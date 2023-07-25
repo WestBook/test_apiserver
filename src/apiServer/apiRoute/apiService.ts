@@ -224,7 +224,7 @@ export class APIService {
         if (data == null) {
             return null;
         }
-        let { frameId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score } = data;
+        let { frameId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score, ccy } = data;
         return {
             frame: frameId,
             icon: iconId,
@@ -234,6 +234,7 @@ export class APIService {
             nameChanged,
             nickname: nickName,
             score,
+            ccy: ccy || 'CNY',
         };
     }
 
