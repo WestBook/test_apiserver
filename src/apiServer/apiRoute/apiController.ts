@@ -191,7 +191,7 @@ export class APIController extends ControllerBase<APIService> {
     }
 
     public async createUser(req: Request, res: Response, next: NextFunction) {
-        const { account, pwd } = req.body;
+        const { account, pwd, ccy } = req.body;
         if (!account || !pwd) {
             res.send({ code: -1, msg: '請檢查帳號密碼' });
             return;
@@ -200,7 +200,7 @@ export class APIController extends ControllerBase<APIService> {
         if (existUser) {
             res.send({ code: -1, msg: '已存在使用者' });
         } else {
-            let defaultUser = await this.service.getDefaultUserData(account, pwd);
+            let defaultUser = await this.service.getDefaultUserData(account, pwd, ccy);
             let insertRes = await this.service.createUser(defaultUser);
             if (insertRes) {
                 let info = await this.getAccountInfo(defaultUser);
