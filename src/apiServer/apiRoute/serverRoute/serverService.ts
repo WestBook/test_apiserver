@@ -100,10 +100,10 @@ export class ServerService {
         let gameSetting = await this.gameInfoModel.getGameInfoByServerId(serverId.toString());
         //更換DB
         this.roomSettingModel.setupDB(gameSetting.name);
-        let setting = await this.roomSettingModel.getAllRoomSetting();
-        let updatedSetting = setting.map((obj) => {
-            return { ...obj, ccy: ccy };
-        });
-        return updatedSetting;
+        let allRoomSetting = await this.roomSettingModel.getAllRoomSetting();
+
+        // 篩選出對應幣值的roomSetting
+        let roomSetting = allRoomSetting.filter((setting) => setting.ccy === ccy);
+        return roomSetting;
     }
 }
