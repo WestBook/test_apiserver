@@ -155,7 +155,7 @@ export class GameController extends ControllerBase<GameService> {
             } else {
                 let data = roomSetting.reduce((pre, cur) => {
                     let { _id, ...rest } = cur;
-                    pre.push({ ...rest });
+                    pre.push({ id: _id, ...rest });
                     return pre;
                 }, []);
                 res.send({ code: 0, data });
@@ -180,5 +180,58 @@ export class GameController extends ControllerBase<GameService> {
             console.log('get gameID fail.', error);
             res.send({ code: -1, msg: error });
         }
+    }
+    public async createRoomSetting(req: Request, res: Response, next: NextFunction) {
+        let { gameName } = req.params;
+        let { data } = req.body;
+        let resData = { code: -1, msg: '' };
+        try {
+            let res = await this.service.createRoomSetting(gameName, data);
+            if (res.acknowledged) {
+                resData.code = 0;
+                resData.msg = 'roomSetting新增成功';
+            } else {
+                resData.msg = '請求發生錯誤';
+            }
+        } catch (err) {
+            resData.msg = '請求發生錯誤';
+        }
+        return res.send(resData);
+    }
+
+    public async updateRoomSetting(req: Request, res: Response, next: NextFunction) {
+        let { gameName, id } = req.params;
+        let { data } = req.body;
+        let resData = { code: -1, msg: '' };
+        try {
+            let res = await this.service.updateRoomSetting(gameName, id, data);
+            console.log(res);
+            if (res.acknowledged && res.matchedCount) {
+                resData.code = 0;
+                resData.msg = 'roomSetting更新成功';
+            } else {
+                resData.msg = '請求發生錯誤';
+            }
+        } catch (err) {
+            resData.msg = '請求發生錯誤';
+        }
+        return res.send(resData);
+    }
+
+    public async deleteRoomSetting(req: Request, res: Response, next: NextFunction) {
+        let { gameName, id } = req.params;
+        let resData = { code: -1, msg: '' };
+        try {
+            let res = await this.service.deleteRoomSetting(gameName, id);
+            if (res.acknowledged && res.deletedCount > 0) {
+                resData.code = 0;
+                resData.msg = 'roomSetting刪除成功';
+            } else {
+                resData.msg = '請求發生錯誤';
+            }
+        } catch (err) {
+            resData.msg = '請求發生錯誤';
+        }
+        return res.send(resData);
     }
 }
