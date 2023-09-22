@@ -14,7 +14,6 @@ export abstract class ModelBase {
     }
 
     public setupDB(dbName: string) {
-        log4("setupDB : " + dbName);
         this.db = this.connection.db(dbName);
     }
 
