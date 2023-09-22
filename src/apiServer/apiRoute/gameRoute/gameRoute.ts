@@ -88,5 +88,17 @@ export class GameRoute extends RouteBase {
         this.Router.get('/getVideoRoomInfo/:roomId', (req: Request, res: Response, next?: NextFunction) => {
             this.gameController.getVideoRoomInfo(req, res, next);
         });
+
+        this.Router.post('/roomSetting/:gameName', (req: Request, res: Response, next?: NextFunction) => {
+            this.gameController.createRoomSetting(req, res, next);
+        });
+
+        this.Router.put('/roomSetting/:gameName/:id', (req: Request, res: Response, next?: NextFunction) => {
+            this.gameController.updateRoomSetting(req, res, next);
+        });
+
+        this.Router.delete('/roomSetting/:gameName/:id', (req: Request, res: Response, next?: NextFunction) => {
+            this.gameController.deleteRoomSetting(req, res, next);
+        });
     }
 }

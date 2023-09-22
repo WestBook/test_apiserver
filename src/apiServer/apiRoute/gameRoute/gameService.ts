@@ -90,8 +90,23 @@ export class GameService {
         return gameID;
     }
 
-    public async getVideoRoomInfo(roomId:string) {
+    public async getVideoRoomInfo(roomId: string) {
         let info = await this.videoRoomInfoModel.getRoomInfo(roomId);
         return info;
+    }
+
+    public async createRoomSetting(gameName: string, data: any) {
+        await this.roomSettingModel.init(dbUrl, gameName);
+        return await this.roomSettingModel.createRoomSetting(data);
+    }
+
+    public async updateRoomSetting(gameName: string, id: string, data: any) {
+        await this.roomSettingModel.init(dbUrl, gameName);
+        return await this.roomSettingModel.updateRoomSetting(id, data);
+    }
+
+    public async deleteRoomSetting(gameName: string, id: string) {
+        await this.roomSettingModel.init(dbUrl, gameName);
+        return await this.roomSettingModel.deleteRoomSetting(id);
     }
 }

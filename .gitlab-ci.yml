@@ -1,0 +1,29 @@
+stages:
+  - build
+  - deploy
+
+build_job:
+  stage: build
+  only:
+    - master
+  tags:
+    - mockApiServer
+  script:
+    - npm install
+    - npm run build
+  artifacts:
+    paths:
+     - dist
+
+deploy_job:
+  stage: deploy
+  only:
+    - master
+  dependencies:
+    - build_job
+  tags:
+    - mockApiServer
+  script:
+    - cp -f dist/apiServer.js /home/apiServer/
+    - pm2 restart apiServer
+    

@@ -67,7 +67,7 @@ export class APIService {
         return db;
     }
 
-    public async getDefaultUserData(account, pwd) {
+    public async getDefaultUserData(account, pwd, ccy) {
         let defaultUserId = await this.userModel.createUserID();
         let defaultAgentId = await this.userModel.createAgentUserID();
         return {
@@ -88,7 +88,8 @@ export class APIService {
             inGame: 0,
             collectList: [],
             role: 'basic',
-            serverId: 0, // 遊戲中的serverId
+            serverId: 0, // 遊戲中的serverId,
+            ccy,
         };
     }
 
@@ -224,7 +225,7 @@ export class APIService {
         if (data == null) {
             return null;
         }
-        let { frameId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score } = data;
+        let { frameId, iconId, needVersion, agentUserId, vip, nameChanged, nickName, score, ccy } = data;
         return {
             frame: frameId,
             icon: iconId,
@@ -234,6 +235,7 @@ export class APIService {
             nameChanged,
             nickname: nickName,
             score,
+            ccy: ccy || 'CNY',
         };
     }
 
