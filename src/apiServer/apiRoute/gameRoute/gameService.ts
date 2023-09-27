@@ -3,20 +3,24 @@ import { UsersModel } from '../../../model/usersModel';
 import { GameListModel } from '../../../model/gameListModel';
 import { GameInfoModel } from '../../../model/gameInfoModel';
 import { RoomSettingModel } from '../../../model/roomSettingModel';
+import { VideoRoomInfoModel } from '../../../model/videoRoomInfoModel';
 
 export class GameService {
     private userModel: UsersModel;
     private gameListModel: GameListModel;
     private gameInfoModel: GameInfoModel;
     private roomSettingModel: RoomSettingModel;
+    private videoRoomInfoModel: VideoRoomInfoModel;
     public async init() {
         this.userModel = new UsersModel();
         this.gameListModel = new GameListModel();
         this.gameInfoModel = new GameInfoModel();
+        this.videoRoomInfoModel = new VideoRoomInfoModel();
         this.roomSettingModel = new RoomSettingModel();
         await this.userModel.init(dbUrl, 'API');
         await this.gameListModel.init(dbUrl, 'API');
         await this.gameInfoModel.init(dbUrl, 'API');
+        await this.videoRoomInfoModel.init(dbUrl, 'SX');
     }
 
     public async getUserData(uid: string) {
@@ -84,6 +88,11 @@ export class GameService {
     public async getGameID(gameName: string) {
         let gameID = await this.gameInfoModel.getGameIdByGameName(gameName);
         return gameID;
+    }
+
+    public async getVideoRoomInfo(roomId: string) {
+        let info = await this.videoRoomInfoModel.getRoomInfo(roomId);
+        return info;
     }
 
     public async createRoomSetting(gameName: string, data: any) {

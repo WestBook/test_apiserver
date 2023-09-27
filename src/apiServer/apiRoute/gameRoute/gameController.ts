@@ -3,6 +3,7 @@ import { ControllerBase } from '../../../base/controllerBase';
 import { GameService } from './gameService';
 import { CreateToken, tokenParse } from '../../../common/token';
 import { getLobbyUrl } from '../../../common/setting';
+import log4 from '../../../common/log4';
 
 export class GameController extends ControllerBase<GameService> {
     private uidCheck(uid: string, res) {
@@ -181,6 +182,19 @@ export class GameController extends ControllerBase<GameService> {
             res.send({ code: -1, msg: error });
         }
     }
+
+    // 取得視訊類遊戲的RoomInfo欄位
+    public async getVideoRoomInfo(req: Request, res: Response, next: NextFunction) {
+        const { roomId } = req.params;
+        try {
+            let info = await this.service.getVideoRoomInfo(roomId);
+            res.send({ code: 0, data: info });
+        } catch (error) {
+            console.log('getVideoRoomInfo fail.', error);
+            res.send({ code: -1, msg: error });
+        }
+    }
+
     public async createRoomSetting(req: Request, res: Response, next: NextFunction) {
         let { gameName } = req.params;
         let { data } = req.body;
