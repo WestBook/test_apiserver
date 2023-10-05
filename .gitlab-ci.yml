@@ -5,7 +5,7 @@ stages:
 build_job:
   stage: build
   only:
-    - tags
+    - master
   tags:
     - mockApiServer
   script:
