@@ -1,4 +1,4 @@
-import { NextFunction, Response, Request } from 'express';
+import e, { NextFunction, Response, Request } from 'express';
 import { ControllerBase } from '../../../base/controllerBase';
 import { ServerService } from './serverService';
 import { slotGameType } from '../../../common/setting';
@@ -43,7 +43,9 @@ export class ServerController extends ControllerBase<ServerService> {
     public async getListData(req: Request, res: Response, next: NextFunction) {
         let { uid } = req.body;
         let { type, sub } = req.body.serverReq;
-        let reqServerId = 5000 + type * 10;
+        let base = Math.floor(Math.log10(type));
+        let reqServerId = (base > 2 ? 5 * Math.pow(10, base) : 5000) + type * 10;
+
         let accountData: any = await this.service.getUserData(uid);
         let { inGame, serverId: userServerId, ccy } = accountData;
         // slot game要把serverid上的roomid改為1,game server再用sub判斷在哪間房
