@@ -43,6 +43,7 @@ export class ServerController extends ControllerBase<ServerService> {
     public async getListData(req: Request, res: Response, next: NextFunction) {
         let { uid } = req.body;
         let { type, sub } = req.body.serverReq;
+        sub = Number(sub);
         let base = Math.floor(Math.log10(type));
         let reqServerId = (base >= 2 ? 5000 * Math.pow(10, base) : 5000) + type * 10;
         let accountData: any = await this.service.getUserData(uid);
