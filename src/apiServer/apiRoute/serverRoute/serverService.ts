@@ -78,11 +78,16 @@ export class ServerService {
     }
 
     public async getRoomSetting(serverId: number, sub: number, ccy: string) {
+        //超過百位數的的serverId的暫時處理命名歸側寫法
+        if (serverId > 500000) {
+            serverId -= 450000;
+        }
         let gameSetting = await this.gameInfoModel.getGameInfoByServerId(serverId.toString());
         //更換DB
         this.roomSettingModel.setupDB(gameSetting.name);
         let setting = await this.roomSettingModel.getRoomSetting(serverId, sub);
         const { lessScore, maxGold, minGold, score, serverID, subType } = setting;
+
         return [
             {
                 ccy: ccy,
