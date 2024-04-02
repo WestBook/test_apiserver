@@ -12,6 +12,7 @@ const getLobbyUrl = (hostname: string, isMultiLang: boolean = false) => {
 const slotGameType = {
     13: 'csd',
     22: 'lhdb',
+    202: 'twtd',
 };
 
 export { apiPort, dbUrl, getLobbyUrl, slotGameType };
