@@ -13,6 +13,11 @@ const slotGameType = {
     13: 'csd',
     22: 'lhdb',
     202: 'twtd',
+    203: 'mysw',
+    204: 'dok',
+    205: 'si',
+    206: 'densho',
+    207: 'apo',
 };
 
 export { apiPort, dbUrl, getLobbyUrl, slotGameType };
